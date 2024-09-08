@@ -11,8 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OT.Assessment.Tester", "tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7EFE3E75-8316-420D-AFA3-ECE90ECF22BB}"
 	ProjectSection(SolutionItems) = preProject
-		DatabaseGenerate.sql = DatabaseGenerate.sql
+		2. Create db objects.sql = 2. Create db objects.sql
 		README.md = README.md
+		1. DatabaseGenerate.sql = 1. DatabaseGenerate.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6FA7DAF4-446B-4610-9EDF-6E418255B176}"
