@@ -1,3 +1,6 @@
+using OT.Assessment.Consumer;
+using OT.Assessment.Consumer.Api;
+using OT.Assessment.Consumer.Data;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +9,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckl
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IPlayerWriter, PlayerWriter>();
+builder.Services.AddScoped<IPlayerReader, PlayerReader>();
+builder.Services.AddScoped<ICasinoWagerWriter, CasinoWagerWriter>();
+builder.Services.AddScoped<ICasinoWagerReader, CasinoWagerReader>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ICasinoEventPublisherService, CasinoEventPublisherService>();
+builder.Services.AddScoped<ICasinoWagerService, CasinoWagerService>();
+builder.Services.AddScoped<IGameReader, GameReader>();
+builder.Services.AddScoped<IGameService, GameService>();
+
 builder.Services.AddSwaggerGen(options =>
 {
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

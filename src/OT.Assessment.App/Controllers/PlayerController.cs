@@ -1,14 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OT.Assessment.Consumer.Api;
+using OT.Assessment.Consumer.Api.Entities;
 namespace OT.Assessment.App.Controllers
 {
   
     [ApiController]
     public class PlayerController : ControllerBase
     {
-        //POST api/player/casinowager
+        private readonly IPlayerService _playerService;
 
-        //GET api/player/{playerId}/wagers
+        public PlayerController(IPlayerService playerService)
+        {
+            _playerService = playerService;
+        }
+        
+        [HttpGet("~/topSpenders")]
+        public List<TopSpenderPlayer> Get(int count)
+        {
+            return _playerService.GetTopSpenders(count);
+        }
+        [HttpGet("~/players")]
+        public List<Player> Get()
+        {
+            return _playerService.GetAll();
+        }
 
-        //GET api/player/topSpenders?count=10        
+        [HttpPost("~/player")]
+        public void SavePlayer([FromBody] Player player)
+        {
+            _playerService.SavePlayer(player);
+        }
     }
 }
