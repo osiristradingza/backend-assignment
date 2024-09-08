@@ -10,12 +10,14 @@ namespace OT.Assessment.App.Controllers
         private readonly ILogger<CasinoWagerController> _logger; 
         private readonly ICasinoWagerService _casinoWagerService;
         private readonly IGameService _gameService;
+        private readonly Guid DEFAULT_GAME_EXTERNAL_REF;
 
         public CasinoWagerController(ICasinoWagerService casinoWagerService, ILogger<CasinoWagerController> logger, IGameService gameService)
         {
             _logger = logger;
             _casinoWagerService = casinoWagerService;
             _gameService = gameService;
+            DEFAULT_GAME_EXTERNAL_REF = Guid.Parse("49D7FD17-EEEC-4836-A967-4E09DA37E2B9");
         }
         
         [HttpGet("~/wagers")]
@@ -35,12 +37,17 @@ namespace OT.Assessment.App.Controllers
         {
             try
             {
-                var game = _gameService.GetGameByExternaReferenceId(wager.ExternalReferenceId);
-                var gameStartTime = game?.StartDateTime;
-                var gameEndTime = game?.EndDateTime;
+                //GetGameByExternaReferenceId to use wager.ExternalReferenceId for parameter below
+                var game = _gameService.GetGameByExternaReferenceId(DEFAULT_GAME_EXTERNAL_REF);
+
+                DateTime? gameStartTime = game != null ? game.StartDateTime : null;
+                DateTime? gameEndTime = game != null ? game.EndDateTime : null;
+
                 if (wager.Amount <= 0)
                     throw new Exception("Wager amount cannot be less than 1");
-                if(wager.CreatedDateTime > DateTime.Now)
+                if (wager.NumberOfBets <= 0)
+                    throw new Exception("Number of bets cannot be less than 1");
+                if (wager.CreatedDateTime > DateTime.Now)
                     throw new Exception("Wager created date cannot be future dated");
                 if (gameStartTime.HasValue && wager.CreatedDateTime >= gameStartTime)
                     throw new Exception("Wager created date cannot be after game start time");
