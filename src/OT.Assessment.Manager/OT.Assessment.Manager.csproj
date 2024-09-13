@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstract\" />
-    <Folder Include="Context\" />
-    <Folder Include="Interface\" />
+    <Folder Include="Helper\" />
+    <Folder Include="UseCases\Games\" />
+    <Folder Include="UseCases\Reports\" />
+    <Folder Include="UseCases\Transactions\" />
+    <Folder Include="UseCases\Wages\" />
   </ItemGroup>
 
   <ItemGroup>
