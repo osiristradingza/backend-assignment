@@ -11,12 +11,16 @@
     <Folder Include="UseCases\Games\" />
     <Folder Include="UseCases\Reports\" />
     <Folder Include="UseCases\Transactions\" />
-    <Folder Include="UseCases\Wages\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OT.Assessment.Database\OT.Assessment.Database.csproj" />
+    <ProjectReference Include="..\OT.Assessment.Model\OT.Assessment.Model.csproj" />
   </ItemGroup>
 
 </Project>

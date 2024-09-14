@@ -19,6 +19,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\OT.Assessment.Database\OT.Assessment.Database.csproj" />
+	  <ProjectReference Include="..\OT.Assessment.Manager\OT.Assessment.Manager.csproj" />
 	</ItemGroup>
 
 </Project>

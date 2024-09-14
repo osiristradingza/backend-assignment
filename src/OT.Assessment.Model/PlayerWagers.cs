@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OT.Assessment.Database.Tables
+namespace OT.Assessment.Model
 {
-    public class Wager
+    public class PlayerWagers
     {
         public Guid WagerId { get; set; }
         public Guid? GameId { get; set; }
