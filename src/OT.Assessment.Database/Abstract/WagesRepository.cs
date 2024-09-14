@@ -30,7 +30,7 @@ namespace OT.Assessment.Database.Abstract
             {
                 using (var connection = _databaseConnection.CreateConnection())
                 {
-                    return await connection.QueryAsync<Wager>("GetAllWagers", commandType: CommandType.StoredProcedure);
+                    return await connection.QueryAsync<Wager>("sp_GetAllWages", commandType: CommandType.StoredProcedure);
                 }
             }
             catch (SqlException ex)
