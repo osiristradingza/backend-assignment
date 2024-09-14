@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Manager.UseCases.Wagers.Implementation;
+using OT.Assessment.Manager.UseCases.Wagers.Interface;
 using System.Configuration;
 using System.Reflection;
 
@@ -11,7 +13,7 @@ builder.Services.AddControllers();
 var configuration = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
 
 // Get the connection string from the configuration
-var connectionString = configuration.GetConnectionString("DefaultConnection");
+var connectionString = configuration.GetConnectionString("DatabaseConnection");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckl
 builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +30,7 @@ builder.Logging.AddConsole();
 builder.Services.AddSingleton<IDatabaseConnection>(new DatabaseConnection(connectionString));
 
 builder.Services.AddScoped<IWages, WagesRepository>();
+builder.Services.AddScoped<IWagerManager, WagerManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

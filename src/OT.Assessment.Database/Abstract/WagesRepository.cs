@@ -10,6 +10,8 @@ using Dapper;
 using OT.Assessment.Database.Tables;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Model;
+using OT.Assessment.Database.DTO;
 
 namespace OT.Assessment.Database.Abstract
 {
@@ -24,23 +26,25 @@ namespace OT.Assessment.Database.Abstract
         }
 
         // Get all wagers using stored procedure
-        public async Task<IEnumerable<Wager>> GetAllWagersAsync()
+        public async Task<IEnumerable<PlayerWagers>> GetAllWagersAsync()
         {
             try
             {
                 using (var connection = _databaseConnection.CreateConnection())
                 {
-                    return await connection.QueryAsync<Wager>("sp_GetAllWages", commandType: CommandType.StoredProcedure);
+                    var wagers = await connection.QueryAsync<Wagers>("sp_GetAllWages", commandType: CommandType.StoredProcedure);
+                    _logger.LogInformation($"{DateTime.Now }- {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {wagers.Count()} retrieved.");
+                    return PlayerWagerMapper.ListMapTo(wagers);
                 }
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"SQL Exception: {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
                 throw new Exception("An error occurred while retrieving the wagers. Please try again later.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"General Exception: {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }
