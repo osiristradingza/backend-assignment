@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 namespace OT.Assessment.App.Controllers
 {
-  
+    [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
     {
