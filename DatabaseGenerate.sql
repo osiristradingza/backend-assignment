@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/13 10:57:02 ******/
+/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/14 16:21:46 ******/
 CREATE DATABASE [OT_Assessment_DB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -84,7 +84,7 @@ ALTER DATABASE [OT_Assessment_DB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, 
 GO
 USE [OT_Assessment_DB]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -112,7 +112,7 @@ CREATE TABLE [dbo].[Accounts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +128,7 @@ CREATE TABLE [dbo].[Countries](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -146,7 +146,7 @@ CREATE TABLE [dbo].[Games](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -161,7 +161,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -176,7 +176,7 @@ CREATE TABLE [dbo].[Sessions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -193,7 +193,7 @@ CREATE TABLE [dbo].[Transactions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -209,7 +209,7 @@ CREATE TABLE [dbo].[TransactionsType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/13 10:57:03 ******/
+/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/14 16:21:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -292,6 +292,38 @@ ALTER TABLE [dbo].[Wagers]  WITH CHECK ADD  CONSTRAINT [FK_Wagers_TransactionsTy
 REFERENCES [dbo].[TransactionsType] ([TransactionTypeId])
 GO
 ALTER TABLE [dbo].[Wagers] CHECK CONSTRAINT [FK_Wagers_TransactionsType]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/14 16:21:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[sp_GetAllWages]
+    AS
+BEGIN
+    BEGIN TRY
+        SELECT 
+            WagerId, 
+            GameId, 
+            TransactionId, 
+            AccountId, 
+            ExternalReferenceId, 
+            TransactionTypeId, 
+            SessionId, 
+            Amount, 
+            NumberOfBets, 
+            CountryCode, 
+            Duration, 
+            DateCreated
+        FROM [dbo].[Wagers] WITH (NOLOCK)
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+
 GO
 USE [master]
 GO
