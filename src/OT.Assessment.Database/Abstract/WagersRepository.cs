@@ -15,11 +15,11 @@ using OT.Assessment.Database.DTO;
 
 namespace OT.Assessment.Database.Abstract
 {
-    public class WagesRepository: IWages
+    public class WagersRepository: IWagers
     {
-        private readonly ILogger<WagesRepository> _logger;
+        private readonly ILogger<WagersRepository> _logger;
         private readonly IDatabaseConnection _databaseConnection;
-        public WagesRepository(ILogger<WagesRepository> logger, IDatabaseConnection databaseConnection)
+        public WagersRepository(ILogger<WagersRepository> logger, IDatabaseConnection databaseConnection)
         {
             _logger = logger;
             _databaseConnection = databaseConnection;
@@ -33,18 +33,18 @@ namespace OT.Assessment.Database.Abstract
                 using (var connection = _databaseConnection.CreateConnection())
                 {
                     var wagers = await connection.QueryAsync<Wagers>("sp_GetAllWages", commandType: CommandType.StoredProcedure);
-                    _logger.LogInformation($"{DateTime.Now }- {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {wagers.Count()} retrieved.");
+                    _logger.LogInformation($"{DateTime.Now }- {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {wagers.Count()} retrieved.");
                     return PlayerWagerMapper.ListMapTo(wagers);
                 }
             }
             catch (SqlException ex)
             {
-                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
                 throw new Exception("An error occurred while retrieving the wagers. Please try again later.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagesRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }

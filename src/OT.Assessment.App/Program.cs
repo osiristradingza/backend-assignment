@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Manager.UseCases.Games.Implementation;
+using OT.Assessment.Manager.UseCases.Games.Interface;
 using OT.Assessment.Manager.UseCases.Wagers.Implementation;
 using OT.Assessment.Manager.UseCases.Wagers.Interface;
 using System.Configuration;
@@ -29,8 +31,10 @@ builder.Logging.AddConsole();
 
 builder.Services.AddSingleton<IDatabaseConnection>(new DatabaseConnection(connectionString));
 
-builder.Services.AddScoped<IWages, WagesRepository>();
+builder.Services.AddScoped<IWagers, WagersRepository>();
 builder.Services.AddScoped<IWagerManager, WagerManager>();
+builder.Services.AddScoped<IGames, GamesRepository>();
+builder.Services.AddScoped<IGameManager, GameManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
