@@ -9,7 +9,7 @@ namespace OT.Assessment.Database.Interface
 {
     public interface IGames
     {
-        Task<Guid?> AddProvider(AddProviderRequest addProviderRequest);
-        Task<Guid?> AddGame(AddGameRequest addGameRequest);
+        Task<Guid?> AddProviderAsync(AddProviderRequest addProviderRequest);
+        Task<Guid?> AddGameAsync(AddGameRequest addGameRequest);
     }
 }

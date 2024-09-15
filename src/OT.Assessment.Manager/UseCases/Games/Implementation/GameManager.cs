@@ -25,7 +25,7 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
             try
             {
                 _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddProvider)} - attempting to add a provider {addProviderRequest.ProviderName}.");
-                return await _games.AddProvider(addProviderRequest);
+                return await _games.AddProviderAsync(addProviderRequest);
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
             try 
             {
                 _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddGame)} - attempting to add a game {addGameRequest.GameName}.");
-                return await _games.AddGame(addGameRequest);
+                return await _games.AddGameAsync(addGameRequest);
 
             }
             catch (Exception ex)

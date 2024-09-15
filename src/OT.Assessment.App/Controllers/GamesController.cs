@@ -17,10 +17,10 @@ namespace OT.Assessment.App.Controllers
 
         [HttpPost]
         [Route("AddProvider")]
-        public async Task<IActionResult> AddProvider(AddProviderRequest addProviderRequest) => Ok(await _games.AddProvider(addProviderRequest));
+        public async Task<IActionResult> AddProvider(AddProviderRequest addProviderRequest) => Ok(await _games.AddProviderAsync(addProviderRequest));
 
         [HttpPost]
         [Route("AddGame")]
-        public async Task<IActionResult> AddGame(AddGameRequest addGameRequest) => Ok(await _games.AddGame(addGameRequest));
+        public async Task<IActionResult> AddGame(AddGameRequest addGameRequest) => Ok(await _games.AddGameAsync(addGameRequest));
     }
 }
