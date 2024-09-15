@@ -14,8 +14,8 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
     public class WagerManager : IWagerManager
     {
         private readonly ILogger<WagerManager> _logger;
-        private readonly IWages _wages;
-        public WagerManager(ILogger<WagerManager> logger, IWages wages) 
+        private readonly IWagers _wages;
+        public WagerManager(ILogger<WagerManager> logger, IWagers wages) 
         {
             _logger = logger;
             _wages = wages;

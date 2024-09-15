@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/14 16:21:46 ******/
+/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/15 07:48:26 ******/
 CREATE DATABASE [OT_Assessment_DB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -84,7 +84,7 @@ ALTER DATABASE [OT_Assessment_DB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, 
 GO
 USE [OT_Assessment_DB]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -112,7 +112,7 @@ CREATE TABLE [dbo].[Accounts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,15 +128,15 @@ CREATE TABLE [dbo].[Countries](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Games](
 	[GameId] [uniqueidentifier] NOT NULL,
-	[GameName] [varchar](50) NULL,
-	[GameDescription] [varchar](255) NULL,
+	[Name] [varchar](50) NULL,
+	[Description] [varchar](255) NULL,
 	[Theme] [varchar](100) NULL,
 	[ProviderID] [uniqueidentifier] NULL,
 	[DateCreated] [datetime] NULL,
@@ -146,14 +146,14 @@ CREATE TABLE [dbo].[Games](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Providers](
 	[ProviderID] [uniqueidentifier] NOT NULL,
-	[ProviderName] [varchar](50) NULL,
+	[Name] [varchar](50) NULL,
 	[DateCreated] [datetime] NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -161,7 +161,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -176,7 +176,7 @@ CREATE TABLE [dbo].[Sessions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -184,16 +184,17 @@ GO
 CREATE TABLE [dbo].[Transactions](
 	[TransactionId] [uniqueidentifier] NOT NULL,
 	[TransactionTypeId] [uniqueidentifier] NULL,
-	[TransactionDate] [datetime] NULL,
-	[TransactionAmount] [decimal](10, 2) NULL,
+	[Date] [datetime] NULL,
+	[Amount] [decimal](10, 2) NULL,
 	[AccountId] [uniqueidentifier] NULL,
+	[Unit] [int] NULL,
  CONSTRAINT [PK_Transactions] PRIMARY KEY CLUSTERED 
 (
 	[TransactionId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -209,7 +210,7 @@ CREATE TABLE [dbo].[TransactionsType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -253,7 +254,7 @@ ALTER TABLE [dbo].[Sessions] ADD  CONSTRAINT [DF_Sessions_DateCreated]  DEFAULT 
 GO
 ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_TransactionId]  DEFAULT (newid()) FOR [TransactionId]
 GO
-ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_TransactionDate]  DEFAULT (getdate()) FOR [TransactionDate]
+ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_TransactionDate]  DEFAULT (getdate()) FOR [Date]
 GO
 ALTER TABLE [dbo].[TransactionsType] ADD  CONSTRAINT [DF_TransactionsType_TransactionTypeId]  DEFAULT (newid()) FOR [TransactionTypeId]
 GO
@@ -267,6 +268,11 @@ ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [FK_Games_Provider] FOREIG
 REFERENCES [dbo].[Providers] ([ProviderID])
 GO
 ALTER TABLE [dbo].[Games] CHECK CONSTRAINT [FK_Games_Provider]
+GO
+ALTER TABLE [dbo].[Transactions]  WITH CHECK ADD  CONSTRAINT [FK_Transactions_TransactionsType] FOREIGN KEY([TransactionTypeId])
+REFERENCES [dbo].[TransactionsType] ([TransactionTypeId])
+GO
+ALTER TABLE [dbo].[Transactions] CHECK CONSTRAINT [FK_Transactions_TransactionsType]
 GO
 ALTER TABLE [dbo].[Wagers]  WITH CHECK ADD  CONSTRAINT [FK_Wagers_Accounts] FOREIGN KEY([AccountId])
 REFERENCES [dbo].[Accounts] ([AccountID])
@@ -293,7 +299,114 @@ REFERENCES [dbo].[TransactionsType] ([TransactionTypeId])
 GO
 ALTER TABLE [dbo].[Wagers] CHECK CONSTRAINT [FK_Wagers_TransactionsType]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/14 16:21:47 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddGame]    Script Date: 2024/09/15 07:48:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[sp_AddGame]
+    @GameID UNIQUEIDENTIFIER,
+    @Name VARCHAR(50),
+	@GameDescription varchar(255),
+	@Theme varchar(100),
+	@ProviderName varchar(50)
+AS
+BEGIN
+    -- Start the TRY block
+    BEGIN TRY
+		Declare @ProviderID UNIQUEIDENTIFIER;
+        -- Check if the game name already exists
+        IF EXISTS (SELECT 1 FROM [dbo].[Games] WHERE [Name] = @Name)
+        BEGIN
+            -- If the name already exists, raise an error
+            RAISERROR('A game with this name already exists.', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (Select 1 FROM [dbo].Providers with (Nolock) WHERE [Name] = @ProviderName)
+        BEGIN
+            -- If the provider name does not exists, raise an error
+            RAISERROR('There is no provider with this name that exists.', 16, 1);
+            RETURN;
+        END
+		
+		Select @ProviderID = providerId FROM [dbo].Providers with (Nolock) WHERE [Name] = @ProviderName
+
+        -- Insert the new provider if the name does not exist
+        INSERT INTO [dbo].[Games] (GameId, Name, Description, Theme, ProviderID)
+        VALUES (@GameID, @Name, @GameDescription, @Theme, @ProviderID);
+
+        -- Return the inserted GameID
+        SELECT @GameID AS GameID;
+    END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_AddProvider]    Script Date: 2024/09/15 07:48:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[sp_AddProvider]
+    @ProviderID UNIQUEIDENTIFIER,
+    @Name VARCHAR(50)
+AS
+BEGIN
+    -- Start the TRY block
+    BEGIN TRY
+        -- Check if the provider name already exists
+        IF EXISTS (SELECT 1 FROM [dbo].[Providers] WHERE [Name] = @Name)
+        BEGIN
+            -- If the name already exists, raise an error
+            RAISERROR('A provider with this name already exists.', 16, 1);
+            RETURN;
+        END
+
+        -- Insert the new provider if the name does not exist
+        INSERT INTO [dbo].[Providers] (ProviderID, Name)
+        VALUES (@ProviderID, @Name);
+
+        -- Return the inserted ProviderID
+        SELECT @ProviderID AS ProviderID;
+    END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/15 07:48:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

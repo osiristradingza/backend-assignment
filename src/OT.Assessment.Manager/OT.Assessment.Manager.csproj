@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Helper\" />
-    <Folder Include="UseCases\Games\" />
     <Folder Include="UseCases\Reports\" />
     <Folder Include="UseCases\Transactions\" />
   </ItemGroup>

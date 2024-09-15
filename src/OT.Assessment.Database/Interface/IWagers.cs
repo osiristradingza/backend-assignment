@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OT.Assessment.Database.Interface
 {
-    public interface IWages
+    public interface IWagers
     {
         Task<IEnumerable<PlayerWagers>> GetAllWagersAsync();
 
