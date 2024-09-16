@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OT.Assessment.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace OT.Assessment.Messaging.Producer.Interface
 {
     public interface IProducerService
     {
+        Task PublishToAccountQueueAsync(AddAccountRequest addAccountRequest);
     }
 }

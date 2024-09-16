@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Manager.UseCases.Games.Interface;
 using OT.Assessment.Model;
 
 namespace OT.Assessment.App.Controllers
@@ -9,18 +10,18 @@ namespace OT.Assessment.App.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly IGames _games;
-        public GamesController(IGames games) 
+        private readonly IGameManager _gameManager;
+        public GamesController(IGameManager gameManager)
         {
-            _games = games;
+            _gameManager = gameManager;
         }
 
         [HttpPost]
         [Route("AddProvider")]
-        public async Task<IActionResult> AddProvider(AddProviderRequest addProviderRequest) => Ok(await _games.AddProviderAsync(addProviderRequest));
+        public async Task<IActionResult> AddProvider(AddProviderRequest addProviderRequest) => Ok(await _gameManager.AddProviderAsync(addProviderRequest));
 
         [HttpPost]
         [Route("AddGame")]
-        public async Task<IActionResult> AddGame(AddGameRequest addGameRequest) => Ok(await _games.AddGameAsync(addGameRequest));
+        public async Task<IActionResult> AddGame(AddGameRequest addGameRequest) => Ok(await _gameManager.AddGameAsync(addGameRequest));
     }
 }

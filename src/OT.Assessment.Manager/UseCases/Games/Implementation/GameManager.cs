@@ -20,31 +20,31 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
             _logger = logger;
             _games = games;
         }
-        public async Task<Guid?> AddProvider(AddProviderRequest addProviderRequest)
+        public async Task<Guid?> AddProviderAsync(AddProviderRequest addProviderRequest)
         {
             try
             {
-                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddProvider)} - attempting to add a provider {addProviderRequest.ProviderName}.");
+                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddProviderAsync)} - attempting to add a provider {addProviderRequest.ProviderName}.");
                 return await _games.AddProviderAsync(addProviderRequest);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddProvider)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddProviderAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }
 
-        public async Task<Guid?> AddGame(AddGameRequest addGameRequest)
+        public async Task<Guid?> AddGameAsync(AddGameRequest addGameRequest)
         {
             try 
             {
-                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddGame)} - attempting to add a game {addGameRequest.GameName}.");
+                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(AddGameAsync)} - attempting to add a game {addGameRequest.GameName}.");
                 return await _games.AddGameAsync(addGameRequest);
 
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddGame)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddGameAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }
