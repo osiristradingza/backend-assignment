@@ -1,9 +1,7 @@
 ﻿using OT.Assessment.Consumer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace OT.Assessment.Consumer
 {
@@ -15,12 +13,10 @@ namespace OT.Assessment.Consumer
         {
             _rabbitMQConsumer = rabbitMQConsumer;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var customerTask = _rabbitMQConsumer.ConsumeAccountQueueAsync(stoppingToken);
-           //var productTask = _rabbitMQConsumer.ConsumeProductQueueAsync(stoppingToken);
-
-            await Task.WhenAll(customerTask/*, productTask*/); // Handle both queues concurrently
+            await _rabbitMQConsumer.ConsumeAccountQueueAsync(stoppingToken);
         }
 
         public override void Dispose()

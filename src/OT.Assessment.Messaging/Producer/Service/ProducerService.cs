@@ -33,6 +33,7 @@ namespace OT.Assessment.Messaging.Producer.Service
                     {
                         // Serialize the account object to JSON
                         var accountJson = JsonSerializer.Serialize(addAccountRequest);
+                        _logger.LogInformation($"{DateTime.Now} - {nameof(ProducerService)} - {nameof(PublishToAccountQueueAsync)} - producer for account queue initiated.");
 
                         // Create a channel and declare a queue
                         using var channel = _rabbitMQConnection.CreateModel();
@@ -41,6 +42,7 @@ namespace OT.Assessment.Messaging.Producer.Service
                         // Send the message to the queue
                         var body = Encoding.UTF8.GetBytes(accountJson);
                         channel.BasicPublish(exchange: "", routingKey: Queues.AccountQueue, basicProperties: null, body: body);
+                        _logger.LogInformation($"{DateTime.Now} - {nameof(ProducerService)} - {nameof(PublishToAccountQueueAsync)} - message account for {addAccountRequest.FirstName} submitted to the queue.");
 
                         // Simulate some additional processing
                         Thread.Sleep(100);  // Sleep to simulate I/O operation latency
@@ -50,7 +52,7 @@ namespace OT.Assessment.Messaging.Producer.Service
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(ProducerService)} - {nameof(PublishToAccountQueueAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
 

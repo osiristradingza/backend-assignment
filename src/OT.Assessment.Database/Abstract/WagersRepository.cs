@@ -45,7 +45,7 @@ namespace OT.Assessment.Database.Abstract
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
     }

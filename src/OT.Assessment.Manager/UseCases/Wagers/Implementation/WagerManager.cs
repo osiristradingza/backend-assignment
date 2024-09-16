@@ -30,7 +30,7 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(GetPlayerWagersAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
     }

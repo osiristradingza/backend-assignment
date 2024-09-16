@@ -34,22 +34,7 @@ namespace OT.Assessment.Database.Abstract
                     // Generate new AccountID (GUID)
                     var newAccountID = Guid.NewGuid();
 
-                    var parameters = new
-                    {
-                        AccountID = newAccountID,
-                        FirstName = addAccountRequest.FirstName,
-                        Surname = addAccountRequest.Surname,
-                        Email = addAccountRequest.Email,
-                        Gender = addAccountRequest.Gender,
-                        PhysicalAddress1 = addAccountRequest.PhysicalAddress1,
-                        PhysicalAddress2 = addAccountRequest.PhysicalAddress2,
-                        PhysicalAddress3 = addAccountRequest.PhysicalAddress3,
-                        PhysicalCode = addAccountRequest.PhysicalCode,
-                        PostalAddress1 = addAccountRequest.PostalAddress1,
-                        PostalAddress2 = addAccountRequest.PostalAddress2,
-                        PostalAddress3 = addAccountRequest.PostalAddress3,
-                        PostalCode = addAccountRequest.PostalCode
-                    };
+                    object parameters = CreateAccountRequestParameter(addAccountRequest, newAccountID);
 
                     // Execute the stored procedure and retrieve the same AccountID back
                     var accountID = await connection.ExecuteScalarAsync<Guid?>(
@@ -73,8 +58,28 @@ namespace OT.Assessment.Database.Abstract
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountsRepository)} - {nameof(AddAccountAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
+        }
+
+        static object CreateAccountRequestParameter(AddAccountRequest addAccountRequest, Guid newAccountID)
+        {
+            return new
+            {
+                AccountID = newAccountID,
+                FirstName = addAccountRequest.FirstName,
+                Surname = addAccountRequest.Surname,
+                Email = addAccountRequest.Email,
+                Gender = addAccountRequest.Gender,
+                PhysicalAddress1 = addAccountRequest.PhysicalAddress1,
+                PhysicalAddress2 = addAccountRequest.PhysicalAddress2,
+                PhysicalAddress3 = addAccountRequest.PhysicalAddress3,
+                PhysicalCode = addAccountRequest.PhysicalCode,
+                PostalAddress1 = addAccountRequest.PostalAddress1,
+                PostalAddress2 = addAccountRequest.PostalAddress2,
+                PostalAddress3 = addAccountRequest.PostalAddress3,
+                PostalCode = addAccountRequest.PostalCode
+            };
         }
     }
 }
