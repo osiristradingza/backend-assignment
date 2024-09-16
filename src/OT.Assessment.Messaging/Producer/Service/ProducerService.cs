@@ -47,9 +47,10 @@ namespace OT.Assessment.Messaging.Producer.Service
                     }
                 });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(ProducerService)} - {nameof(PublishToAccountQueueAsync)} - {ex.Message}");
+                throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }
 

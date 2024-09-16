@@ -1,4 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using OT.Assessment.Consumer.Interface;
+using OT.Assessment.Consumer.Service;
+using OT.Assessment.Consumer;
+using OT.Assessment.Database.Helper;
+using OT.Assessment.Database.Abstract;
+using OT.Assessment.Database.Interface;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
@@ -10,7 +16,20 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         //configure services
-      
+        var configuration = context.Configuration;
+
+        // Register the RabbitMQ consumer service and Dapper repositories
+        services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumerService>();
+
+        // Register with Dapper
+        services.AddSingleton<IAccounts, AccountsRepository>();
+
+        // Configure SQL Connection from appsettings.json
+        services.AddSingleton<IConfiguration>(configuration);
+
+        // Register the worker service that consumes both queues
+        services.AddHostedService<Worker>();
+
     })
     .Build();
 
