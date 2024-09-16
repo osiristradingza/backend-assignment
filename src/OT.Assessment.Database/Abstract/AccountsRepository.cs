@@ -62,6 +62,50 @@ namespace OT.Assessment.Database.Abstract
             }
         }
 
+        public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest) 
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountsRepository)} - {nameof(AddCountryAsync)} - attempting to add new country called {addCountryRequest.CountryName}.");
+                    // Generate new Country (GUID)
+                    var newCountryID = Guid.NewGuid();
+
+                    var parameters = new
+                    {
+                        CountryID = newCountryID,
+                        CountryCode = addCountryRequest.CountryCode,
+                        CountryName = addCountryRequest.CountryName,
+
+                    };
+
+                    // Execute the stored procedure and retrieve the same AccountID back
+                    var accountID = await connection.ExecuteScalarAsync<Guid?>(
+                        "sp_AddCountry",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddCountryAsync)} - country added with ID {accountID}.");
+
+                    // Return the new AccountID
+                    return accountID;
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(AccountsRepository)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while adding the country. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountsRepository)} - {nameof(AddAccountAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
         static object CreateAccountRequestParameter(AddAccountRequest addAccountRequest, Guid newAccountID)
         {
             return new

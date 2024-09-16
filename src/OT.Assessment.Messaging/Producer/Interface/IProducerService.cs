@@ -10,5 +10,7 @@ namespace OT.Assessment.Messaging.Producer.Interface
     public interface IProducerService
     {
         Task PublishToAccountQueueAsync(AddAccountRequest addAccountRequest);
+
+        Task PublishToCountryQueueAsync(AddCountryRequest addCountryRequest);
     }
 }

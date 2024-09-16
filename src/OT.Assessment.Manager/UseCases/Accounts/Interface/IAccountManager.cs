@@ -11,5 +11,7 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Interfaces
     {
         Task<string> AddAccountAsync(AddAccountRequest addAccountRequest, bool UseMassages = false);
         Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest);
+        Task<string> AddCountryAsync(AddCountryRequest addCountryRequest , bool UseMassages = false);
+        Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest);
     }
 }

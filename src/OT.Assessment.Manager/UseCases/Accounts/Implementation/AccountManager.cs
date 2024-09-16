@@ -58,5 +58,39 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             }
 
         }
+
+       public async Task<string> AddCountryAsync(AddCountryRequest addCountryRequest, bool UseMassages)
+        {
+            try
+            {
+                if (UseMassages)
+                {
+                    await _producerService.PublishToCountryQueueAsync(addCountryRequest);
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {Nofications.SuccessfulPublishedAccountMessage}");
+                    return Nofications.SuccessfulPublishedCountryMessage;
+                }
+                else
+                    return Nofications.MessagingIsDisabled;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest)
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddCountryAsync)} - attempting to add a country named {addCountryRequest.CountryName}.");
+                return await _accounts.AddCountryAsync(addCountryRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
     }
 }

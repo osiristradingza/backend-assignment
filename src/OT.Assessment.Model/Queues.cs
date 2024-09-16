@@ -9,5 +9,7 @@ namespace OT.Assessment.Model
     public static class Queues
     {
         public static string AccountQueue = "account_queue";
+        public static string CountryQueue = "country_queue";
+        public static string WagerQueue = "wager_queue";
     }
 }

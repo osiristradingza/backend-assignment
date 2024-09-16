@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/16 23:39:21 ******/
 CREATE DATABASE [OT_Assessment_DB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -84,7 +84,7 @@ ALTER DATABASE [OT_Assessment_DB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, 
 GO
 USE [OT_Assessment_DB]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -106,13 +106,15 @@ CREATE TABLE [dbo].[Accounts](
 	[PostalAddress3] [varchar](150) NULL,
 	[PostalCode] [varchar](50) NULL,
 	[DateCreated] [datetime] NULL,
+	[Active] [bit] NULL,
+	[BrandId] [uniqueidentifier] NULL,
  CONSTRAINT [PK_Accounts] PRIMARY KEY CLUSTERED 
 (
 	[AccountID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +130,7 @@ CREATE TABLE [dbo].[Countries](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -146,7 +148,7 @@ CREATE TABLE [dbo].[Games](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -161,7 +163,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -176,7 +178,7 @@ CREATE TABLE [dbo].[Sessions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -188,13 +190,14 @@ CREATE TABLE [dbo].[Transactions](
 	[Amount] [decimal](10, 2) NULL,
 	[AccountId] [uniqueidentifier] NULL,
 	[Unit] [int] NULL,
+	[ExternalReferenceId] [uniqueidentifier] NULL,
  CONSTRAINT [PK_Transactions] PRIMARY KEY CLUSTERED 
 (
 	[TransactionId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -210,7 +213,7 @@ CREATE TABLE [dbo].[TransactionsType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -256,6 +259,8 @@ ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_TransactionId]
 GO
 ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_TransactionDate]  DEFAULT (getdate()) FOR [Date]
 GO
+ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_ExternalReferenceId]  DEFAULT (newid()) FOR [ExternalReferenceId]
+GO
 ALTER TABLE [dbo].[TransactionsType] ADD  CONSTRAINT [DF_TransactionsType_TransactionTypeId]  DEFAULT (newid()) FOR [TransactionTypeId]
 GO
 ALTER TABLE [dbo].[TransactionsType] ADD  CONSTRAINT [DF_TransactionsType_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
@@ -299,7 +304,115 @@ REFERENCES [dbo].[TransactionsType] ([TransactionTypeId])
 GO
 ALTER TABLE [dbo].[Wagers] CHECK CONSTRAINT [FK_Wagers_TransactionsType]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddGame]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddAccount]    Script Date: 2024/09/16 23:39:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE     PROCEDURE [dbo].[sp_AddAccount]
+    @AccountID UNIQUEIDENTIFIER,
+    @FirstName VARCHAR(100),
+	@Surname VARCHAR(100),
+	@Email VARCHAR(150),
+	@Gender VARCHAR(10),
+	@PhysicalAddress1 VARCHAR(150),
+	@PhysicalAddress2 VARCHAR(150),
+	@PhysicalAddress3 VARCHAR(150),
+	@PhysicalCode VARCHAR(50),
+	@PostalAddress1 VARCHAR(150),
+	@PostalAddress2 VARCHAR(150),
+	@PostalAddress3 VARCHAR(150),
+	@PostalCode VARCHAR(50)
+AS
+BEGIN
+    -- Start the TRY block
+    BEGIN TRY
+		Declare @AccountNumber varchar(150) = @Email;
+		Declare @Username varchar(150) = @Email;
+        -- Check if the account email already exists
+        IF EXISTS (SELECT 1 FROM [dbo].[Accounts] WHERE Email = @Email)
+        BEGIN
+            -- If the email already exists, raise an error
+            RAISERROR('An account with this email already exists.', 16, 1);
+            RETURN;
+        END
+
+        -- Insert the new account if the email does not exist
+        INSERT INTO [dbo].[Accounts] (AccountID, AccountNumber, Username, FirstName, Surname, Email, Gender, PhysicalAddress1, PhysicalAddress2, PhysicalAddress3, PhysicalCode, PostalAddress1, PostalAddress2, PostalAddress3, PostalCode, Active)
+        VALUES (@AccountID, @AccountNumber, @Username, @FirstName, @Surname, @Email, @Gender, @PhysicalAddress1, @PhysicalAddress2, @PhysicalAddress3, @PhysicalCode, @PostalAddress1, @PostalAddress2, @PostalAddress3, @PostalCode,'1');
+
+        -- Return the inserted AccountID
+        SELECT @AccountID AS AccountID;
+    END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_AddCountry]    Script Date: 2024/09/16 23:39:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create   PROCEDURE [dbo].[sp_AddCountry]
+    @CountryID UNIQUEIDENTIFIER,
+    @CountryCode VARCHAR(10),
+	@CountryName VARCHAR(50)
+AS
+BEGIN
+    -- Start the TRY block
+    BEGIN TRY
+        -- Check if the country code already exists
+        IF EXISTS (SELECT 1 FROM [dbo].Countries WHERE CountryCode = @CountryCode)
+        BEGIN
+            -- If the code already exists, raise an error
+            RAISERROR('A Country with this code already exists.', 16, 1);
+            RETURN;
+        END
+
+        -- Insert the new provider if the name does not exist
+        INSERT INTO [dbo].couCountries(CountryID, CountryCode,CountryName)
+        VALUES (@CountryID, @CountryCode,@CountryName);
+
+        -- Return the inserted CountryID
+        SELECT @CountryID AS CountryID;
+    END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+GO
+/****** Object:  StoredProcedure [dbo].[sp_AddGame]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -359,7 +472,7 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddProvider]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddProvider]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -406,7 +519,116 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/15 07:48:26 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddWager]    Script Date: 2024/09/16 23:39:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create    PROCEDURE [dbo].[sp_AddWager]
+    @WagerId UNIQUEIDENTIFIER,
+    @Theme VARCHAR(100),
+	@ProviderName varchar(50),
+	@GameName varchar(50),
+	@Username varchar(50),
+	@TransactionType varchar(10),
+	@Amount decimal(10,2),
+	@CountryCode varchar(10),
+	@NumberOfBets int
+AS
+BEGIN
+    -- Start the TRY block
+    BEGIN TRY
+		Declare @TransactionId UNIQUEIDENTIFIER;
+		Declare @BrandId UNIQUEIDENTIFIER;	
+		Declare @AccountId UNIQUEIDENTIFIER;
+		Declare @ExternalReferenceId UNIQUEIDENTIFIER;
+		Declare @TransactionTypeId UNIQUEIDENTIFIER;
+		Declare @GameId UNIQUEIDENTIFIER;
+		Declare @SessionId UNIQUEIDENTIFIER;
+        -- Check if the wager  already exists
+        IF EXISTS (SELECT 1 FROM [dbo].Wagers WHERE WagerId = @WagerId)
+        BEGIN
+            -- If the ID already exists, raise an error
+            RAISERROR('A wager with this ID already exists.', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (Select 1 FROM [dbo].Games with (Nolock) WHERE [Name] = @GameName)
+        BEGIN
+            -- If the game name does not exists, raise an error
+            RAISERROR('There is no game with this name that exists.', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (Select 1 FROM [dbo].Providers with (Nolock) WHERE [Name] = @ProviderName)
+        BEGIN
+            -- If the provider name does not exists, raise an error
+            RAISERROR('There is no provider with this name that exists.', 16, 1);
+            RETURN;
+        END
+		
+		IF NOT EXISTS (Select 1 FROM [dbo].Accounts with (Nolock) WHERE Username = @Username)
+        BEGIN
+            -- If the account username does not exists, raise an error
+            RAISERROR('There is no account with this username that exists.', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (Select 1 FROM [dbo].TransactionsType with (Nolock) WHERE TransactionTypeCode = @TransactionType)
+        BEGIN
+            -- If the account username does not exists, raise an error
+            RAISERROR('There is no transactions type with this code that exists.', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (Select 1 FROM [dbo].Countries with (Nolock) WHERE CountryCode = @CountryCode)
+        BEGIN
+            -- If the account username does not exists, raise an error
+            RAISERROR('There is no country type with this code that exists.', 16, 1);
+            RETURN;
+        END
+
+		Select top 1 @GameId = GameId FROM [dbo].Games with (Nolock) WHERE [Name] = @GameName
+		select top 1 @TransactionTypeId  = TransactionTypeId FROM [dbo].TransactionsType with (Nolock) WHERE TransactionTypeCode = @TransactionType
+        select top 1 @AccountId = AccountID, @BrandId = BrandId FROM [dbo].Accounts with (Nolock) WHERE Username = @Username
+        
+		Insert into [dbo].[Transactions]([AccountId],[Amount],[Unit],[TransactionTypeId])
+		values (@AccountId,@Amount,@NumberOfBets,@TransactionTypeId)
+
+
+		Select top 1 @TransactionId = TransactionId  , @ExternalReferenceId = ExternalReferenceId
+		FROM [dbo].[Transactions] with (Nolock) WHERE [AccountId] = @AccountId order by  Date desc;
+
+		Insert into [dbo].[Sessions]([SessionData])
+		values (@Username)
+
+		select top 1 @SessionId = SessionId from [dbo].[Sessions] with (Nolock) order by DateCreated desc ;
+
+		insert into Wagers ([WagerId],[GameId],[TransactionId],[AccountId],[ExternalReferenceId],[TransactionTypeId],[SessionId],[Amount],[NumberOfBets],[CountryCode])
+		values(@WagerId,@GameId,@TransactionId,@AccountId,@ExternalReferenceId,@TransactionTypeId,@SessionId,@Amount,@NumberOfBets,@CountryCode)
+		-- Return the inserted GameID
+        SELECT @WagerId AS WagerId;
+    END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/16 23:39:22 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -433,6 +655,114 @@ BEGIN
     BEGIN CATCH
         DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
         SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetPlayerWagersWithPagination]    Script Date: 2024/09/16 23:39:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[sp_GetPlayerWagersWithPagination]
+    @PlayerId UNIQUEIDENTIFIER,
+    @Page INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+	    -- Start the TRY block
+    BEGIN TRY
+    -- Calculate the starting row
+    DECLARE @StartRow INT = (@Page - 1) * @PageSize + 1;
+
+    -- Get the total number of rows for the player
+    DECLARE @TotalRows INT;
+    SELECT @TotalRows = COUNT(*)
+    FROM Wagers
+    WHERE accountId = @PlayerId;
+
+    -- Fetch paginated data for the player
+    SELECT 
+        w.wagerId,
+        g.Name AS game,
+        p.Name,
+        w.amount,
+        w.DateCreated AS createdDate
+    FROM Wagers w
+    INNER JOIN Games g ON w.gameId = g.gameId
+	inner join Providers p on g.ProviderID  = p.ProviderID
+    WHERE w.accountId = @PlayerId
+    ORDER BY w.DateCreated DESC
+    OFFSET @StartRow - 1 ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    -- Return pagination metadata
+    SELECT 
+        @Page AS Page,
+        @PageSize AS PageSize,
+        @TotalRows AS Total,
+        CEILING((@TotalRows + 0.0) / @PageSize) AS TotalPages;
+
+		 END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetTopSpenders]    Script Date: 2024/09/16 23:39:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[sp_GetTopSpenders]
+    @Count INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+	    -- Start the TRY block
+    BEGIN TRY
+    -- Retrieve the top spenders based on total amount spent
+    SELECT TOP (@Count) 
+        a.accountId,
+        a.username,
+        SUM(w.amount) AS totalAmountSpent
+    FROM Wagers w
+    INNER JOIN Accounts a ON w.accountId = a.accountId
+    GROUP BY a.accountId, a.username
+    ORDER BY totalAmountSpent DESC;
+	 END TRY
+
+    -- Begin the CATCH block
+    BEGIN CATCH
+        -- Handle the error
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        -- Retrieve the error details
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error with the original details
         RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END;
