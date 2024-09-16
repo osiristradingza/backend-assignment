@@ -5,6 +5,7 @@ using OT.Assessment.Consumer;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Interface;
+using RabbitMQ.Client;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
@@ -17,6 +18,24 @@ var host = Host.CreateDefaultBuilder(args)
     {
         //configure services
         var configuration = context.Configuration;
+
+        // Register RabbitMQ connection and channels as singletons
+        services.AddSingleton<IConnection>(sp =>
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = configuration["RabbitMQ:Host"],
+                UserName = configuration["RabbitMQ:UserName"],
+                Password = configuration["RabbitMQ:Password"]
+            };
+            return factory.CreateConnection();
+        });
+
+        services.AddSingleton(sp =>
+        {
+            var connection = sp.GetRequiredService<IConnection>();
+            return connection.CreateModel(); // Create RabbitMQ channel
+        });
 
         // Register the RabbitMQ consumer service and Dapper repositories
         services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumerService>();
