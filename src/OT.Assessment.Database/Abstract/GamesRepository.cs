@@ -23,13 +23,13 @@ namespace OT.Assessment.Database.Abstract
             _logger = logger;
             _databaseConnection = databaseConnection;
         }
-        public async Task<Guid?> AddProvider(AddProviderRequest addProviderRequest)
+        public async Task<Guid?> AddProviderAsync(AddProviderRequest addProviderRequest)
         {
             try
             {
                 using (var connection = _databaseConnection.CreateConnection())
                 {
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddProvider)} - attempting to add new provider {addProviderRequest.ProviderName}.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddProviderAsync)} - attempting to add new provider {addProviderRequest.ProviderName}.");
                     
                     // Generate new ProviderID (GUID)
                     var newProviderID = Guid.NewGuid();
@@ -47,7 +47,7 @@ namespace OT.Assessment.Database.Abstract
                         commandType: CommandType.StoredProcedure
                     );
 
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddProvider)} - provider added with ID {providerID}.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddProviderAsync)} - provider added with ID {providerID}.");
 
                     // Return the new ProviderID
                     return providerID;
@@ -55,22 +55,22 @@ namespace OT.Assessment.Database.Abstract
             }
             catch (SqlException ex)
             {
-                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(AddProvider)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(AddProviderAsync)} - {ex.Message}");
                 throw new Exception("An error occurred while adding the provider. Please try again later.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(AddProvider)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(AddProviderAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
         }
-        public async Task<Guid?> AddGame(AddGameRequest addGameRequest) 
+        public async Task<Guid?> AddGameAsync(AddGameRequest addGameRequest) 
         {
             try
             {
                 using (var connection = _databaseConnection.CreateConnection())
                 {
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddGame)} - attempting to add new game {addGameRequest.GameName}.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddGameAsync)} - attempting to add new game {addGameRequest.GameName}.");
 
                     var newGameID = Guid.NewGuid();
                     var parameters = new
@@ -88,19 +88,19 @@ namespace OT.Assessment.Database.Abstract
                             commandType: CommandType.StoredProcedure
                         );
 
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddGame)} - game added with ID {gameID}.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(GamesRepository)} - {nameof(AddGameAsync)} - game added with ID {gameID}.");
 
                     return gameID;
                 }
             }
             catch (SqlException ex)
             {
-                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(AddGame)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(AddGameAsync)} - {ex.Message}");
                 throw new Exception("An error occurred while adding the game. Please try again later.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(AddGame)} - {ex.Message}");
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(AddGameAsync)} - {ex.Message}");
                 throw new Exception("An unexpected error occurred. Please try again later.");
             }
 

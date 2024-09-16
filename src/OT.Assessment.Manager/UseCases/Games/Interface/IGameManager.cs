@@ -9,7 +9,7 @@ namespace OT.Assessment.Manager.UseCases.Games.Interface
 {
     public interface IGameManager
     {
-        Task<Guid?> AddProvider(AddProviderRequest addProviderRequest);
-        Task<Guid?> AddGame(AddGameRequest addGameRequest);
+        Task<Guid?> AddProviderAsync(AddProviderRequest addProviderRequest);
+        Task<Guid?> AddGameAsync(AddGameRequest addGameRequest);
     }
 }
