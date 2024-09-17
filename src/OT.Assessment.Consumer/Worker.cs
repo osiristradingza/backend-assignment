@@ -1,4 +1,5 @@
 ﻿using OT.Assessment.Consumer.Interface;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -16,9 +17,11 @@ namespace OT.Assessment.Consumer
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _rabbitMQConsumer.ConsumeAccountQueueAsync(stoppingToken);
-            await _rabbitMQConsumer.ConsumeCountryQueueAsync(stoppingToken);
-            await _rabbitMQConsumer.ConsumeWagerQueueAsync(stoppingToken);
+            await Task.WhenAll(
+                _rabbitMQConsumer.ConsumeAccountQueueAsync(stoppingToken),
+                _rabbitMQConsumer.ConsumeCountryQueueAsync(stoppingToken),
+                _rabbitMQConsumer.ConsumeWagerQueueAsync(stoppingToken)
+            );
         }
 
         public override void Dispose()
