@@ -14,5 +14,6 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Interface
         Task<AddCasinoWagerResponse> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager);
 
         Task<string> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager,  bool UseMassages = false);
+        Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10);
     }
 }

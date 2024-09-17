@@ -52,5 +52,19 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
         {
             throw new NotImplementedException();
         }
+
+        public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10) 
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(WagerManager)} - {nameof(GetPlayerWagesAsync)} - attempting to get player wagers.");
+                return await _wages.GetPlayerWagesAsync(playerId, page, pageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(GetPlayerWagesAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
     }
 }

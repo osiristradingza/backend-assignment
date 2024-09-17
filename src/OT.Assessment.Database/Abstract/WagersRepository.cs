@@ -48,7 +48,7 @@ namespace OT.Assessment.Database.Abstract
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
-        }
+        }      
 
         public async Task<AddCasinoWagerResponse> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager)
         {
@@ -88,7 +88,7 @@ namespace OT.Assessment.Database.Abstract
 
                     _logger.LogInformation($"{DateTime.Now} - {nameof(WagersRepository)} - {nameof(PlayerWagerAsync)} - wager added with ID {addWager.WagerId}.");
 
-                    // Return the new AccountID
+                    // Return the new wager
                     return addWager;
                 }
             }
@@ -103,5 +103,53 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
+
+        public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    PlayerWagesResponse playerWagesResponse = new PlayerWagesResponse();
+
+                    var parameters = new
+                    {
+                        PlayerId = playerId,
+                        Page = page,
+                        PageSize = pageSize                   
+                    };
+
+                    var results = await connection.QueryMultipleAsync(
+                                           "sp_GetPlayerWagersWithPagination",
+                                           parameters,
+                                           commandType: CommandType.StoredProcedure
+                                       );
+                    var wagers  = await results.ReadAsync<ReportPlayerWager>();
+                    var pagination = await results.ReadFirstAsync();
+
+                    playerWagesResponse.data = wagers.ToList();
+                    playerWagesResponse.page = pagination.Page;
+                    playerWagesResponse.pageSize = pagination.PageSize;
+                    playerWagesResponse.total = pagination.Total;
+                    playerWagesResponse.totalPages = pagination.TotalPages;
+
+                    _logger.LogInformation($"{DateTime.Now}- {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {wagers.Count()} retrieved.");
+                    
+                    return playerWagesResponse;
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while retrieving the wagers. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagersRepository)} - {nameof(GetAllWagersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+
     }
 }
