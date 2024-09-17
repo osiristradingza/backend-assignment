@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OT.Assessment.Consumer.Factory;
 using OT.Assessment.Consumer.Interface;
-using OT.Assessment.Consumer.Service;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
@@ -81,6 +81,7 @@ namespace OT.Assessment.Consumer
 
                     // Register the RabbitMQ consumer service
                     services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumerService>();
+                    services.AddSingleton<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>();
 
                     // Add the background worker that will consume messages from the queues
                     services.AddHostedService<Worker>();

@@ -1,174 +1,125 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using OT.Assessment.Consumer.Factory;
 using OT.Assessment.Consumer.Interface;
 using OT.Assessment.Database.Interface;
 using OT.Assessment.Model;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace OT.Assessment.Consumer.Service
+public class RabbitMQConsumerService : IRabbitMQConsumer, IDisposable
 {
-    public class RabbitMQConsumerService : IRabbitMQConsumer, IDisposable
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<RabbitMQConsumerService> _logger;
+    private readonly IRabbitMQConsumerFactory _consumerFactory;
+    private readonly IConnection _connection;
+    private readonly IModel _accountChannel;
+    private readonly IModel _wagerChannel;
+    private readonly IModel _countryChannel;
+
+    public RabbitMQConsumerService(
+        IServiceProvider serviceProvider,
+        ILogger<RabbitMQConsumerService> logger,
+        IRabbitMQConsumerFactory consumerFactory,
+        IConnection connection,
+        IModel accountChannel,
+        IModel wagerChannel,
+        IModel countryChannel)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<RabbitMQConsumerService> _logger;
-        private readonly IConnection _connection;
-        private readonly IModel _accountChannel;
-        private readonly IModel _wagerChannel;
-        private readonly IModel _countryChannel;
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+        _consumerFactory = consumerFactory;
+        _connection = connection;
+        _accountChannel = accountChannel;
+        _wagerChannel = wagerChannel;
+        _countryChannel = countryChannel;
+    }
 
-        public RabbitMQConsumerService(IServiceProvider serviceProvider, ILogger<RabbitMQConsumerService> logger, IConnection connection, IModel accountChannel, IModel wagerChannel, IModel countryChannel)
+    public Task ConsumeAccountQueueAsync(CancellationToken stoppingToken)
+    {
+        return _consumerFactory.CreateConsumerAsync(Queues.AccountQueue, _accountChannel, async ea =>
         {
-            _serviceProvider = serviceProvider;
-            _logger = logger;
-            _connection = connection;
-            _accountChannel = accountChannel;
-            _wagerChannel = wagerChannel;
-            _countryChannel = countryChannel;
-        }
-        public Task ConsumeAccountQueueAsync(CancellationToken stoppingToken)
-        {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            _logger.LogInformation($"Message content: {message}");
+
             try
             {
-                _accountChannel.QueueDeclare(queue: Queues.AccountQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
-                var consumer = new AsyncEventingBasicConsumer(_accountChannel);
-                _logger.LogInformation("Consumer for account queue initiated.");
+                var account = JsonSerializer.Deserialize<AddAccountRequest>(message);
 
-                consumer.Received += async (model, ea) =>
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    _logger.LogInformation($"Received a message from the queue: {Queues.AccountQueue}");
+                    var accountManager = scope.ServiceProvider.GetRequiredService<IAccounts>();
+                    await accountManager.AddAccountAsync(account);
+                }
 
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    _logger.LogInformation($"Message content: {message}");
-
-                    try
-                    {
-                        var account = JsonSerializer.Deserialize<AddAccountRequest>(message);
-
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var accountManager = scope.ServiceProvider.GetRequiredService<IAccounts>();
-                            await accountManager.AddAccountAsync(account);
-                        }
-
-                        _logger.LogInformation($"Account {account.FirstName} saved to the database.");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error processing message: {ex.Message}");
-                    }
-                };
-
-                _accountChannel.BasicConsume(queue: Queues.AccountQueue, autoAck: true, consumer: consumer);
-
-                return Task.CompletedTask;
+                _logger.LogInformation($"Account {account.FirstName} saved to the database.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error initializing queue consumption: {ex.Message}");
-                return Task.CompletedTask;
+                _logger.LogError($"Error processing message: {ex.Message}");
             }
-        }
-        public Task ConsumeCountryQueueAsync(CancellationToken stoppingToken)
+        }, stoppingToken);
+    }
+
+    public Task ConsumeCountryQueueAsync(CancellationToken stoppingToken)
+    {
+        return _consumerFactory.CreateConsumerAsync(Queues.CountryQueue, _countryChannel, async ea =>
         {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            _logger.LogInformation($"Message content: {message}");
+
             try
             {
-                _countryChannel.QueueDeclare(queue: Queues.CountryQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
-                var consumer = new AsyncEventingBasicConsumer(_countryChannel);
-                _logger.LogInformation("Consumer for country queue initiated.");
+                var country = JsonSerializer.Deserialize<AddCountryRequest>(message);
 
-                consumer.Received += async (model, ea) =>
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    _logger.LogInformation($"Received a message from the queue: {Queues.CountryQueue}");
+                    var accountManager = scope.ServiceProvider.GetRequiredService<IAccounts>();
+                    await accountManager.AddCountryAsync(country);
+                }
 
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    _logger.LogInformation($"Message content: {message}");
-
-                    try
-                    {
-                        var country = JsonSerializer.Deserialize<AddCountryRequest>(message);
-
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var accountManager = scope.ServiceProvider.GetRequiredService<IAccounts>();
-                            await accountManager.AddCountryAsync(country);
-                        }
-
-                        _logger.LogInformation($"Country {country.CountryCode} saved to the database.");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error processing message: {ex.Message}");
-                    }
-                };
-
-                _accountChannel.BasicConsume(queue: Queues.CountryQueue, autoAck: true, consumer: consumer);
-
-                return Task.CompletedTask;
+                _logger.LogInformation($"Country {country.CountryCode} saved to the database.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error initializing queue consumption: {ex.Message}");
-                return Task.CompletedTask;
+                _logger.LogError($"Error processing message: {ex.Message}");
             }
-        }
-        public Task ConsumeWagerQueueAsync(CancellationToken stoppingToken)
+        }, stoppingToken);
+    }
+
+    public Task ConsumeWagerQueueAsync(CancellationToken stoppingToken)
+    {
+        return _consumerFactory.CreateConsumerAsync(Queues.WagerQueue, _wagerChannel, async ea =>
         {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            _logger.LogInformation($"Message content: {message}");
+
             try
             {
-                _wagerChannel.QueueDeclare(queue: Queues.WagerQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
-                var consumer = new AsyncEventingBasicConsumer(_wagerChannel);
-                _logger.LogInformation("Consumer for wager queue initiated.");
+                var wager = JsonSerializer.Deserialize<AddCasinoWagerRequest>(message);
 
-                consumer.Received += async (model, ea) =>
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    _logger.LogInformation($"Received a message from the queue: {Queues.WagerQueue}");
+                    var wagerManager = scope.ServiceProvider.GetRequiredService<IWagers>();
+                    await wagerManager.PlayerWagerAsync(wager);
+                }
 
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    _logger.LogInformation($"Message content: {message}");
-
-                    try
-                    {
-                        var wager = JsonSerializer.Deserialize<AddCasinoWagerRequest>(message);
-
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var wagerManager = scope.ServiceProvider.GetRequiredService<IWagers>();
-                            await wagerManager.PlayerWagerAsync(wager);
-                        }
-
-                        _logger.LogInformation($"Wager for  {wager.Username} saved to the database.");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error processing message: {ex.Message}");
-                    }
-                };
-
-                _accountChannel.BasicConsume(queue: Queues.WagerQueue, autoAck: true, consumer: consumer);
-
-                return Task.CompletedTask;
+                _logger.LogInformation($"Wager for {wager.Username} saved to the database.");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error initializing queue consumption: {ex.Message}");
-                return Task.CompletedTask;
+                _logger.LogError($"Error processing message: {ex.Message}");
             }
-        }
-        public void Dispose()
-        {
-            _accountChannel?.Close();
-            _wagerChannel?.Close();
-            _countryChannel?.Close();
-            _connection?.Close();
-        }
+        }, stoppingToken);
+    }
+
+    public void Dispose()
+    {
+        _accountChannel?.Close();
+        _wagerChannel?.Close();
+        _countryChannel?.Close();
+        _connection?.Close();
     }
 }
