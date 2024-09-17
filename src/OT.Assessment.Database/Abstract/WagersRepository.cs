@@ -60,22 +60,7 @@ namespace OT.Assessment.Database.Abstract
                     var newWagerId = Guid.NewGuid();
                     var newTransactioId = Guid.NewGuid();
                     var newSessionID = Guid.NewGuid();
-
-                    var parameters = new
-                    {
-                        WagerId = newWagerId,
-                        Theme = addCasinoWager.Theme,
-                        ProviderName = addCasinoWager.ProviderName,
-                        GameName = addCasinoWager.GameName,
-                        Username = addCasinoWager.Username,
-                        TransactionType = addCasinoWager.TransactionType,
-                        Amount = addCasinoWager.Amount,
-                        CountryCode = addCasinoWager.CountryCode,
-                        NumberOfBets = addCasinoWager.NumberOfBets,
-                        TransactionId = newTransactioId,
-                        SessionId = newSessionID,
-
-                    };
+                    object parameters = CreateCasinoWagerParameter(addCasinoWager, newWagerId, newTransactioId, newSessionID);
 
                     // Execute the stored procedure and retrieve the same response back
                     var addWager = await connection.QuerySingleOrDefaultAsync<AddCasinoWagerResponse?>(
@@ -101,6 +86,26 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
+
+        private static object CreateCasinoWagerParameter(AddCasinoWagerRequest addCasinoWager, Guid newWagerId, Guid newTransactioId, Guid newSessionID)
+        {
+            return new
+            {
+                WagerId = newWagerId,
+                Theme = addCasinoWager.Theme,
+                ProviderName = addCasinoWager.ProviderName,
+                GameName = addCasinoWager.GameName,
+                Username = addCasinoWager.Username,
+                TransactionType = addCasinoWager.TransactionType,
+                Amount = addCasinoWager.Amount,
+                CountryCode = addCasinoWager.CountryCode,
+                NumberOfBets = addCasinoWager.NumberOfBets,
+                TransactionId = newTransactioId,
+                SessionId = newSessionID,
+
+            };
+        }
+
         public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10)
         {
             try
