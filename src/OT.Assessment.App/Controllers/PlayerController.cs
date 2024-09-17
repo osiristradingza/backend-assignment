@@ -21,8 +21,7 @@ namespace OT.Assessment.App.Controllers
         //
         [HttpPost]
         [Route("casinowager")]
-        public async Task<IActionResult> AddWager(AddCasinoWagerRequest addCasinoWager) => Ok(await _wagerManager.PlayerWagerAsync(addCasinoWager));
-        
+        public async Task<IActionResult> AddWager(AddCasinoWagerRequest addCasinoWager) => Ok(await _wagerManager.PlayerWagerAsync(addCasinoWager));        
 
         [HttpGet]
         [Route("GetWagers")]
@@ -30,15 +29,10 @@ namespace OT.Assessment.App.Controllers
 
         [HttpGet]
         [HttpGet("{playerId}/casino")]
-        public async Task<IActionResult> Wagers(Guid playerId, int page = 1, int pageSize = 10) =>Ok(await _wagerManager.GetPlayerWagesAsync(playerId, page, pageSize));
-        
+        public async Task<IActionResult> Wagers(Guid playerId, int page = 1, int pageSize = 10) =>Ok(await _wagerManager.GetPlayerWagesAsync(playerId, page, pageSize));        
 
         [HttpGet("topSpenders")]
-        public async Task<IActionResult> GetTopSpenders(int count = 10) 
-        {
-            return Ok();
-
-        }
+        public async Task<IActionResult> GetTopSpenders(int count = 10) => Ok(await _wagerManager.GetTopSpendersAsync(count));
 
     }
 }

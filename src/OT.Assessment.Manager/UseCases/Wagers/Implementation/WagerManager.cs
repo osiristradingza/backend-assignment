@@ -66,5 +66,19 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
+
+        public async Task<IEnumerable<ReportGetTopSpenders>> GetTopSpendersAsync(int count = 10) 
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(WagerManager)} - {nameof(GetTopSpendersAsync)} - attempting to get top players.");
+                return await _wages.GetTopSpendersAsync(count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(GetTopSpendersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
     }
 }
