@@ -18,6 +18,12 @@ namespace OT.Assessment.App.Controllers
 
         [HttpPost]
         [Route("AddAccount")]
-        public async Task<IActionResult> AddAccount(AddAccountRequest addAccountRequest) => Ok(await _accountManager.AddAccountAsync(addAccountRequest));
+        public async Task<IActionResult> AddAccount(AddAccountRequest addAccountRequest) => Ok(await _accountManager.GlobalAddAccountAsync(addAccountRequest));
+
+        [HttpPost]
+        [Route("AddCountry")]
+        public async Task<IActionResult> AddCountry(AddCountryRequest addCountryRequest ) => Ok(await _accountManager.GlobalAddCountryAsync(addCountryRequest));
+
+
     }
 }
