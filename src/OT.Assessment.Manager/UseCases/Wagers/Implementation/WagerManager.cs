@@ -15,14 +15,14 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
     {
         private readonly ILogger<WagerManager> _logger;
         private readonly IWagers _wages;
-        public WagerManager(ILogger<WagerManager> logger, IWagers wages) 
+        public WagerManager(ILogger<WagerManager> logger, IWagers wages)
         {
             _logger = logger;
             _wages = wages;
         }
         public async Task<IEnumerable<PlayerWagers>> GetPlayerWagersAsync()
         {
-            try 
+            try
             {
                 _logger.LogInformation($"{DateTime.Now} - {nameof(WagerManager)} - {nameof(GetPlayerWagersAsync)} - attempting to retrieve player wagers.");
                 return await _wages.GetAllWagersAsync();
@@ -32,6 +32,25 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(GetPlayerWagersAsync)} - {ex.Message}");
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
+        }
+
+        public async Task<AddCasinoWagerResponse> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager)
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(WagerManager)} - {nameof(PlayerWagerAsync)} - attempting to add player wager.");
+                return await _wages.PlayerWagerAsync(addCasinoWager);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(PlayerWagerAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<string> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager, bool UseMassages)
+        {
+            throw new NotImplementedException();
         }
     }
 }

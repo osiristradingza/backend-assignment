@@ -11,6 +11,6 @@ namespace OT.Assessment.Database.Interface
     public interface IWagers
     {
         Task<IEnumerable<PlayerWagers>> GetAllWagersAsync();
-
+        Task<AddCasinoWagerResponse> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager);
     }
 }
