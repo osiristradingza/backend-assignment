@@ -21,7 +21,6 @@ namespace OT.Assessment.Messaging.Producer.Service
             _logger = logger;
             _rabbitMQConnection = rabbitMQConnection;
         }
-
         public async Task PublishToAccountQueueAsync(AddAccountRequest addAccountRequest)
         {
             try
@@ -55,8 +54,6 @@ namespace OT.Assessment.Messaging.Producer.Service
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
-
         public async Task PublishToCountryQueueAsync(AddCountryRequest addCountryRequest)
         {
             try
@@ -90,7 +87,6 @@ namespace OT.Assessment.Messaging.Producer.Service
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task PublishToWagerQueueAsync(AddCasinoWagerRequest addCasinoWager)
         {
             try

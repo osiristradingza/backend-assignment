@@ -33,7 +33,6 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<Guid?> AddGameAsync(AddGameRequest addGameRequest)
         {
             try 

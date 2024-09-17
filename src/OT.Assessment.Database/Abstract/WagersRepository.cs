@@ -86,7 +86,6 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         private static object CreateCasinoWagerParameter(AddCasinoWagerRequest addCasinoWager, Guid newWagerId, Guid newTransactioId, Guid newSessionID)
         {
             return new
@@ -105,7 +104,6 @@ namespace OT.Assessment.Database.Abstract
 
             };
         }
-
         public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10)
         {
             try
