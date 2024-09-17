@@ -38,7 +38,6 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<AddCasinoWagerResponse> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager)
         {
             try
@@ -52,7 +51,6 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<string> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager, bool UseMassages)
         {
             try
@@ -72,7 +70,6 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10) 
         {
             try
@@ -86,7 +83,6 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<IEnumerable<ReportGetTopSpenders>> GetTopSpendersAsync(int count = 10) 
         {
             try

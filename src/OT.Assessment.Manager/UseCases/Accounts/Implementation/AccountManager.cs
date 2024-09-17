@@ -23,7 +23,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             _producerService = producerService;
             _accounts = accounts;   
         }
-
         public async Task<string> AddAccountAsync(AddAccountRequest addAccountRequest, bool UseMassages)
         {
             try
@@ -43,7 +42,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest)
         {
             try 
@@ -58,7 +56,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             }
 
         }
-
        public async Task<string> AddCountryAsync(AddCountryRequest addCountryRequest, bool UseMassages)
         {
             try
@@ -78,7 +75,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest)
         {
             try

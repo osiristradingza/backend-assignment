@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/16 23:39:21 ******/
+/****** Object:  Database [OT_Assessment_DB]    Script Date: 2024/09/17 10:19:04 ******/
 CREATE DATABASE [OT_Assessment_DB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -84,7 +84,7 @@ ALTER DATABASE [OT_Assessment_DB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, 
 GO
 USE [OT_Assessment_DB]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -114,7 +114,7 @@ CREATE TABLE [dbo].[Accounts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Countries]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -130,7 +130,7 @@ CREATE TABLE [dbo].[Countries](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -148,7 +148,7 @@ CREATE TABLE [dbo].[Games](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Providers]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -163,7 +163,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -178,7 +178,7 @@ CREATE TABLE [dbo].[Sessions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Transactions]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +197,7 @@ CREATE TABLE [dbo].[Transactions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[TransactionsType]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -213,7 +213,7 @@ CREATE TABLE [dbo].[TransactionsType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  Table [dbo].[Wagers]    Script Date: 2024/09/17 10:19:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -241,7 +241,11 @@ ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [DF_Accounts_AccountID]  DEFAULT (n
 GO
 ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [DF_Accounts_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
 GO
+ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [DF_Accounts_BrandId]  DEFAULT (newid()) FOR [BrandId]
+GO
 ALTER TABLE [dbo].[Countries] ADD  CONSTRAINT [DF_Countries_CountryID]  DEFAULT (newid()) FOR [CountryID]
+GO
+ALTER TABLE [dbo].[Countries] ADD  CONSTRAINT [DF_Countries_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
 GO
 ALTER TABLE [dbo].[Games] ADD  CONSTRAINT [DF_Games_GameId]  DEFAULT (newid()) FOR [GameId]
 GO
@@ -304,7 +308,7 @@ REFERENCES [dbo].[TransactionsType] ([TransactionTypeId])
 GO
 ALTER TABLE [dbo].[Wagers] CHECK CONSTRAINT [FK_Wagers_TransactionsType]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddAccount]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddAccount]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -365,7 +369,7 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddCountry]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddCountry]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -412,7 +416,7 @@ BEGIN
     END CATCH
 END
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddGame]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddGame]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -472,7 +476,7 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddProvider]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddProvider]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -519,12 +523,12 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_AddWager]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_AddWager]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-create    PROCEDURE [dbo].[sp_AddWager]
+CREATE    PROCEDURE [dbo].[sp_AddWager]
     @WagerId UNIQUEIDENTIFIER,
     @Theme VARCHAR(100),
 	@ProviderName varchar(50),
@@ -533,18 +537,20 @@ create    PROCEDURE [dbo].[sp_AddWager]
 	@TransactionType varchar(10),
 	@Amount decimal(10,2),
 	@CountryCode varchar(10),
-	@NumberOfBets int
+	@NumberOfBets int,
+	@TransactionId UNIQUEIDENTIFIER,
+	@SessionId UNIQUEIDENTIFIER
 AS
 BEGIN
     -- Start the TRY block
     BEGIN TRY
-		Declare @TransactionId UNIQUEIDENTIFIER;
+		
 		Declare @BrandId UNIQUEIDENTIFIER;	
 		Declare @AccountId UNIQUEIDENTIFIER;
 		Declare @ExternalReferenceId UNIQUEIDENTIFIER;
 		Declare @TransactionTypeId UNIQUEIDENTIFIER;
 		Declare @GameId UNIQUEIDENTIFIER;
-		Declare @SessionId UNIQUEIDENTIFIER;
+		
         -- Check if the wager  already exists
         IF EXISTS (SELECT 1 FROM [dbo].Wagers WHERE WagerId = @WagerId)
         BEGIN
@@ -588,26 +594,28 @@ BEGIN
             RETURN;
         END
 
-		Select top 1 @GameId = GameId FROM [dbo].Games with (Nolock) WHERE [Name] = @GameName
+		Select top 1 @GameId = GameId FROM [dbo].Games g with (Nolock) join dbo.Providers p  with (Nolock) on g.ProviderID = p.ProviderID  
+		WHERE g.[Name] = @GameName  and p.Name = @ProviderName and g.Theme = @Theme
 		select top 1 @TransactionTypeId  = TransactionTypeId FROM [dbo].TransactionsType with (Nolock) WHERE TransactionTypeCode = @TransactionType
         select top 1 @AccountId = AccountID, @BrandId = BrandId FROM [dbo].Accounts with (Nolock) WHERE Username = @Username
         
-		Insert into [dbo].[Transactions]([AccountId],[Amount],[Unit],[TransactionTypeId])
-		values (@AccountId,@Amount,@NumberOfBets,@TransactionTypeId)
+		Insert into [dbo].[Transactions](TransactionId,[AccountId],[Amount],[Unit],[TransactionTypeId])
+		values (@TransactionId,@AccountId,@Amount,@NumberOfBets,@TransactionTypeId)
 
 
-		Select top 1 @TransactionId = TransactionId  , @ExternalReferenceId = ExternalReferenceId
-		FROM [dbo].[Transactions] with (Nolock) WHERE [AccountId] = @AccountId order by  Date desc;
+		Select top 1 @ExternalReferenceId = ExternalReferenceId
+		FROM [dbo].[Transactions] with (Nolock) WHERE TransactionId = @TransactionId order by  Date desc;
 
-		Insert into [dbo].[Sessions]([SessionData])
-		values (@Username)
-
-		select top 1 @SessionId = SessionId from [dbo].[Sessions] with (Nolock) order by DateCreated desc ;
+		Insert into [dbo].[Sessions](SessionId,[SessionData])
+		values (@SessionId,@Username)
 
 		insert into Wagers ([WagerId],[GameId],[TransactionId],[AccountId],[ExternalReferenceId],[TransactionTypeId],[SessionId],[Amount],[NumberOfBets],[CountryCode])
 		values(@WagerId,@GameId,@TransactionId,@AccountId,@ExternalReferenceId,@TransactionTypeId,@SessionId,@Amount,@NumberOfBets,@CountryCode)
 		-- Return the inserted GameID
-        SELECT @WagerId AS WagerId;
+        SELECT @WagerId AS WagerId,@Theme as Theme ,@ProviderName as Provider,@GameName as GameName,
+		 @TransactionId as TransactionId , @BrandId as BrandId,@AccountId as AccountId, @Username as Username,
+		 @ExternalReferenceId as ExternalReferenceId, @TransactionTypeId AS TransactionTypeId, @Amount as Amount,
+		 getdate() as CreatedDateTime, @NumberOfBets as NumberOfBets, @CountryCode as CountryCode, @Username as SessionData , 34563 as Duration ;
     END TRY
 
     -- Begin the CATCH block
@@ -628,7 +636,7 @@ BEGIN
     END CATCH
 END
 GO
-/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetAllWages]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -660,7 +668,7 @@ BEGIN
 END;
 
 GO
-/****** Object:  StoredProcedure [dbo].[sp_GetPlayerWagersWithPagination]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetPlayerWagersWithPagination]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -685,11 +693,11 @@ BEGIN
 
     -- Fetch paginated data for the player
     SELECT 
-        w.wagerId,
-        g.Name AS game,
-        p.Name,
-        w.amount,
-        w.DateCreated AS createdDate
+        w.wagerId as WagerId,
+        g.Name AS Game,
+        p.Name as  Name,
+        w.amount as Amount,
+        w.DateCreated AS CreatedDate
     FROM Wagers w
     INNER JOIN Games g ON w.gameId = g.gameId
 	inner join Providers p on g.ProviderID  = p.ProviderID
@@ -724,9 +732,8 @@ BEGIN
         RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END;
-
 GO
-/****** Object:  StoredProcedure [dbo].[sp_GetTopSpenders]    Script Date: 2024/09/16 23:39:22 ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetTopSpenders]    Script Date: 2024/09/17 10:19:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -739,34 +746,32 @@ BEGIN
 	    -- Start the TRY block
     BEGIN TRY
     -- Retrieve the top spenders based on total amount spent
-    SELECT TOP (@Count) 
-        a.accountId,
-        a.username,
-        SUM(w.amount) AS totalAmountSpent
-    FROM Wagers w
-    INNER JOIN Accounts a ON w.accountId = a.accountId
-    GROUP BY a.accountId, a.username
-    ORDER BY totalAmountSpent DESC;
+		SELECT TOP (@Count) 
+		    a.accountId as AccountId,
+		    a.username as Username,
+		    SUM(w.amount) AS TotalAmountSpent
+		FROM Wagers w
+		INNER JOIN Accounts a ON w.accountId = a.accountId
+		GROUP BY a.accountId, a.username
+		ORDER BY totalAmountSpent DESC;
 	 END TRY
-
     -- Begin the CATCH block
-    BEGIN CATCH
-        -- Handle the error
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-
-        -- Retrieve the error details
-        SELECT 
-            @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-
-        -- Raise the error with the original details
-        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
-    END CATCH
+     BEGIN CATCH
+         -- Handle the error
+         DECLARE @ErrorMessage NVARCHAR(4000);
+         DECLARE @ErrorSeverity INT;
+         DECLARE @ErrorState INT;
+	 
+         -- Retrieve the error details
+         SELECT 
+             @ErrorMessage = ERROR_MESSAGE(),
+             @ErrorSeverity = ERROR_SEVERITY(),
+             @ErrorState = ERROR_STATE();
+	 
+         -- Raise the error with the original details
+         RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+     END CATCH
 END;
-
 GO
 USE [master]
 GO
