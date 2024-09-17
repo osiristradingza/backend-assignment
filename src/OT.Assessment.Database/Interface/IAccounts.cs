@@ -10,5 +10,6 @@ namespace OT.Assessment.Database.Interface
     public interface IAccounts
     {
         Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest);
+        Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest);
     }
 }

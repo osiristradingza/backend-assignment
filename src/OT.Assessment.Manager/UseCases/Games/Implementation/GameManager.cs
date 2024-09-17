@@ -30,7 +30,7 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddProviderAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
 
@@ -45,7 +45,7 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(AddGameAsync)} - {ex.Message}");
-                throw new Exception("An unexpected error occurred. Please try again later.");
+                throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
     }

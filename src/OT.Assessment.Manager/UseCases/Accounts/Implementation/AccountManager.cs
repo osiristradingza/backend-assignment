@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OT.Assessment.Database.Interface;
 using OT.Assessment.Manager.UseCases.Accounts.Interfaces;
 using OT.Assessment.Manager.UseCases.Games.Implementation;
 using OT.Assessment.Messaging.Producer.Interface;
@@ -15,10 +16,12 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
     {
         private readonly ILogger<AccountManager> _logger;
         private readonly IProducerService _producerService;
-        public AccountManager(ILogger<AccountManager> logger, IProducerService producerService)
+        private readonly IAccounts _accounts;
+        public AccountManager(ILogger<AccountManager> logger, IProducerService producerService, IAccounts accounts)
         {
             _logger = logger;
             _producerService = producerService;
+            _accounts = accounts;   
         }
 
         public async Task<string> AddAccountAsync(AddAccountRequest addAccountRequest, bool UseMassages)
@@ -41,9 +44,53 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             }
         }
 
-        public Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest)
+        public async Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest)
         {
-            throw new NotImplementedException();
+            try 
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - attempting to add a account for {addAccountRequest.FirstName}.");
+                return await _accounts.AddAccountAsync(addAccountRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddAccountAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+
+        }
+
+       public async Task<string> AddCountryAsync(AddCountryRequest addCountryRequest, bool UseMassages)
+        {
+            try
+            {
+                if (UseMassages)
+                {
+                    await _producerService.PublishToCountryQueueAsync(addCountryRequest);
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {Nofications.SuccessfulPublishedAccountMessage}");
+                    return Nofications.SuccessfulPublishedCountryMessage;
+                }
+                else
+                    return Nofications.MessagingIsDisabled;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest)
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddCountryAsync)} - attempting to add a country named {addCountryRequest.CountryName}.");
+                return await _accounts.AddCountryAsync(addCountryRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
         }
     }
 }
