@@ -9,5 +9,7 @@ namespace OT.Assessment.Consumer.Interface
     public interface IRabbitMQConsumer
     {
         Task ConsumeAccountQueueAsync(CancellationToken stoppingToken);
+        Task ConsumeCountryQueueAsync(CancellationToken stoppingToken);
+        Task ConsumeWagerQueueAsync(CancellationToken stoppingToken);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Manager.UseCases.Accounts.Repository;
 using OT.Assessment.Manager.UseCases.Wagers.Interface;
+using OT.Assessment.Messaging.Producer.Interface;
 using OT.Assessment.Model;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,13 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
     {
         private readonly ILogger<WagerManager> _logger;
         private readonly IWagers _wages;
-        public WagerManager(ILogger<WagerManager> logger, IWagers wages)
+        private readonly IProducerService _producerService;
+
+        public WagerManager(ILogger<WagerManager> logger, IWagers wages, IProducerService producerService )
         {
             _logger = logger;
             _wages = wages;
+            _producerService = producerService;
         }
         public async Task<IEnumerable<PlayerWagers>> GetPlayerWagersAsync()
         {
@@ -50,7 +55,22 @@ namespace OT.Assessment.Manager.UseCases.Wagers.Implementation
 
         public async Task<string> PlayerWagerAsync(AddCasinoWagerRequest addCasinoWager, bool UseMassages)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (UseMassages)
+                {
+                    await _producerService.PublishToWagerQueueAsync(addCasinoWager);
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(WagerManager)} - {nameof(PlayerWagerAsync)} - {Nofications.SuccessfulPublishedAccountMessage}");
+                    return Nofications.SuccessfulPublishedWagerMessage;
+                }
+                else
+                    return Nofications.MessagingIsDisabled;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(WagerManager)} - {nameof(PlayerWagerAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
         }
 
         public async Task<PlayerWagesResponse> GetPlayerWagesAsync(Guid playerId, int page = 1, int pageSize = 10) 

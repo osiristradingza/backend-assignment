@@ -10,6 +10,7 @@ namespace OT.Assessment.Model
     {
         public static string SuccessfulPublishedAccountMessage = "Account message sent to RabbitMQ";
         public static string SuccessfulPublishedCountryMessage = "Country message sent to RabbitMQ";
+        public static string SuccessfulPublishedWagerMessage = "Wager message sent to RabbitMQ";
         public static string GeneralExceptionMessage = "An unexpected error occurred. Please try again later.";
         public static string MessagingIsDisabled = "Please make sure you send a 'true' parameter to enable messaging.";
     }

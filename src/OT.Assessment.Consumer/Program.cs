@@ -77,6 +77,7 @@ namespace OT.Assessment.Consumer
 
                     // Register IAccounts repository to interact with the database via Dapper
                     services.AddSingleton<IAccounts, AccountsRepository>();
+                    services.AddSingleton<IWagers, WagersRepository>();
 
                     // Register the RabbitMQ consumer service
                     services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumerService>();
