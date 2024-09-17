@@ -34,12 +34,12 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             {
                 if (_globalConfiguration.UseMessaging) 
                 {
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - massaging switched on.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddAccountAsync)} - massaging switched on.");
                     return await AddAccountAsync(addAccountRequest, true);
                 }
                 else 
                 {
-                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - massaging switched off.");
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddAccountAsync)} - massaging switched off.");
                     var addAccount = await AddAccountAsync(addAccountRequest);
                     return addAccount.ToString()??"";
                 }
