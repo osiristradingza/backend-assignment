@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using OT.Assessment.Database.Abstract;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Domain.Implementation;
+using OT.Assessment.Domain.Interface;
 using OT.Assessment.Manager.UseCases.Accounts.Interfaces;
 using OT.Assessment.Manager.UseCases.Accounts.Repository;
 using OT.Assessment.Manager.UseCases.Games.Implementation;
@@ -42,7 +44,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddSingleton<IDatabaseConnection>(new DatabaseConnection(connectionString));
-
+builder.Services.AddSingleton<IGlobalConfiguration, GlobalConfiguration>();
 builder.Services.AddScoped<IWagers, WagersRepository>();
 builder.Services.AddScoped<IWagerManager, WagerManager>();
 builder.Services.AddScoped<IGames, GamesRepository>();

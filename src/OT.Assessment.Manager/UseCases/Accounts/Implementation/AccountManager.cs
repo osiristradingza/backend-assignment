@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using OT.Assessment.Database.Interface;
+using OT.Assessment.Domain.Interface;
 using OT.Assessment.Manager.UseCases.Accounts.Interfaces;
 using OT.Assessment.Manager.UseCases.Games.Implementation;
 using OT.Assessment.Messaging.Producer.Interface;
@@ -17,11 +18,38 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
         private readonly ILogger<AccountManager> _logger;
         private readonly IProducerService _producerService;
         private readonly IAccounts _accounts;
-        public AccountManager(ILogger<AccountManager> logger, IProducerService producerService, IAccounts accounts)
+        private readonly IGlobalConfiguration _globalConfiguration;
+        public AccountManager(ILogger<AccountManager> logger, IProducerService producerService, IAccounts accounts, IGlobalConfiguration globalConfiguration)
         {
             _logger = logger;
             _producerService = producerService;
             _accounts = accounts;   
+            _globalConfiguration = globalConfiguration;
+        }
+
+
+        public async Task<string> GlobalAddAccountAsync(AddAccountRequest addAccountRequest) 
+        {
+            try
+            {
+                if (_globalConfiguration.UseMessaging) 
+                {
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - massaging switched on.");
+                    return await AddAccountAsync(addAccountRequest, true);
+                }
+                else 
+                {
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - massaging switched off.");
+                    var addAccount = await AddAccountAsync(addAccountRequest);
+                    return addAccount.ToString()??"";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(GlobalAddAccountAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
         }
         public async Task<string> AddAccountAsync(AddAccountRequest addAccountRequest, bool UseMassages)
         {
@@ -75,6 +103,31 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
+
+        public async Task<string> GlobalAddCountryAsync(AddCountryRequest addCountryRequest)
+        {
+            try
+            {
+                if (_globalConfiguration.UseMessaging)
+                {
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddCountryAsync)} - massaging switched on.");
+                    return await AddCountryAsync(addCountryRequest, true);
+                }
+                else
+                {
+                    _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddCountryAsync)} - massaging switched off.");
+                    var addAccount = await AddCountryAsync(addCountryRequest);
+                    return addAccount.ToString() ?? "";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(GlobalAddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
         public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest)
         {
             try

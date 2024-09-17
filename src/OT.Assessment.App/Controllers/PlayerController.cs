@@ -21,7 +21,7 @@ namespace OT.Assessment.App.Controllers
         //
         [HttpPost]
         [Route("casinowager")]
-        public async Task<IActionResult> AddWager(AddCasinoWagerRequest addCasinoWager) => Ok(await _wagerManager.PlayerWagerAsync(addCasinoWager));        
+        public async Task<IActionResult> AddWager(AddCasinoWagerRequest addCasinoWager) => Ok(await _wagerManager.GlobalPlayerWagerAsync(addCasinoWager));        
 
         [HttpGet]
         [Route("GetWagers")]
