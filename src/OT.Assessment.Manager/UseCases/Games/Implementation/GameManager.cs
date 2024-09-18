@@ -47,5 +47,35 @@ namespace OT.Assessment.Manager.UseCases.Games.Implementation
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
+
+        public async Task<IEnumerable<ApplicationGamesResponse>> GetAllGamesAsync()
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(GetAllGamesAsync)} - attempting to get all games.");
+                return await _games.GetAllGamesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(GetAllGamesAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationProvidersResponse>> GetAllProvidersAsync()
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(GameManager)} - {nameof(GetAllProvidersAsync)} - attempting to get all providers.");
+                return await _games.GetAllProvidersAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GameManager)} - {nameof(GetAllProvidersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
     }
 }

@@ -23,25 +23,25 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
         {
             _logger = logger;
             _producerService = producerService;
-            _accounts = accounts;   
+            _accounts = accounts;
             _globalConfiguration = globalConfiguration;
         }
 
 
-        public async Task<string> GlobalAddAccountAsync(AddAccountRequest addAccountRequest) 
+        public async Task<string> GlobalAddAccountAsync(AddAccountRequest addAccountRequest)
         {
             try
             {
-                if (_globalConfiguration.UseMessaging) 
+                if (_globalConfiguration.UseMessaging)
                 {
                     _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddAccountAsync)} - massaging switched on.");
                     return await AddAccountAsync(addAccountRequest, true);
                 }
-                else 
+                else
                 {
                     _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GlobalAddAccountAsync)} - massaging switched off.");
                     var addAccount = await AddAccountAsync(addAccountRequest);
-                    return addAccount.ToString()??"";
+                    return addAccount.ToString() ?? "";
                 }
 
             }
@@ -72,7 +72,7 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
         }
         public async Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest)
         {
-            try 
+            try
             {
                 _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(AddAccountAsync)} - attempting to add a account for {addAccountRequest.FirstName}.");
                 return await _accounts.AddAccountAsync(addAccountRequest);
@@ -84,7 +84,7 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             }
 
         }
-       public async Task<string> AddCountryAsync(AddCountryRequest addCountryRequest, bool UseMassages)
+        public async Task<string> AddCountryAsync(AddCountryRequest addCountryRequest, bool UseMassages)
         {
             try
             {
@@ -103,7 +103,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<string> GlobalAddCountryAsync(AddCountryRequest addCountryRequest)
         {
             try
@@ -127,7 +126,6 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest)
         {
             try
@@ -138,6 +136,36 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Repository
             catch (Exception ex)
             {
                 _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(AddCountryAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationPlayersResponse>> GetAllPlayersAsync() 
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GetAllPlayersAsync)} - attempting to get all players.");
+                return await _accounts.GetAllPlayersAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(GetAllPlayersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationCountriesResponse>> GetAllCountriesAsync()
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} - {nameof(AccountManager)} - {nameof(GetAllCountriesAsync)} - attempting to get all countries.");
+                return await _accounts.GetAllCountriesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountManager)} - {nameof(GetAllCountriesAsync)} - {ex.Message}");
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }

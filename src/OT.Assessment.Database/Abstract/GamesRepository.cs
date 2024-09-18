@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using OT.Assessment.Database.DTO;
 using OT.Assessment.Database.Helper;
 using OT.Assessment.Database.Interface;
 using OT.Assessment.Database.Tables;
@@ -104,6 +105,51 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
 
+        }
+        public async Task<IEnumerable<ApplicationGamesResponse>> GetAllGamesAsync()
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    var games = await connection.QueryAsync<ApplicationGamesResponse>("sp_GetAllGames", commandType: CommandType.StoredProcedure);
+                    _logger.LogInformation($"{DateTime.Now}- {nameof(GamesRepository)} - {nameof(GetAllGamesAsync)} - {games.Count()} retrieved.");
+                    return games;
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(GetAllGamesAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while retrieving the games. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(GetAllGamesAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationProvidersResponse>> GetAllProvidersAsync()
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    var providers = await connection.QueryAsync<ApplicationProvidersResponse>("sp_GetAllProviders", commandType: CommandType.StoredProcedure);
+                    _logger.LogInformation($"{DateTime.Now}- {nameof(GamesRepository)} - {nameof(GetAllProvidersAsync)} - {providers.Count()} retrieved.");
+                    return providers;
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(GamesRepository)} - {nameof(GetAllProvidersAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while retrieving the providers. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(GamesRepository)} - {nameof(GetAllProvidersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
         }
     }
 }

@@ -23,5 +23,15 @@ namespace OT.Assessment.App.Controllers
         [HttpPost]
         [Route("AddGame")]
         public async Task<IActionResult> AddGame(AddGameRequest addGameRequest) => Ok(await _gameManager.AddGameAsync(addGameRequest));
+
+        [HttpGet]
+        [Route("GetAllGames")]
+        public async Task<IActionResult> GetAllGames()=>Ok(await _gameManager.GetAllGamesAsync());
+
+
+        [HttpGet]
+        [Route("GetAllProviders")]
+        public async Task<IActionResult> GetAllProviders() => Ok(await _gameManager.GetAllProvidersAsync());
+
     }
 }
