@@ -11,5 +11,7 @@ namespace OT.Assessment.Database.Interface
     {
         Task<Guid?> AddAccountAsync(AddAccountRequest addAccountRequest);
         Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest);
+        Task<IEnumerable<ApplicationPlayersResponse>> GetAllPlayersAsync();
+        Task<IEnumerable<ApplicationCountriesResponse>> GetAllCountriesAsync();
     }
 }

@@ -61,7 +61,6 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         public async Task<Guid?> AddCountryAsync(AddCountryRequest addCountryRequest) 
         {
             try
@@ -105,7 +104,6 @@ namespace OT.Assessment.Database.Abstract
                 throw new Exception(Nofications.GeneralExceptionMessage);
             }
         }
-
         static object CreateAccountRequestParameter(AddAccountRequest addAccountRequest, Guid newAccountID)
         {
             return new
@@ -124,6 +122,51 @@ namespace OT.Assessment.Database.Abstract
                 PostalAddress3 = addAccountRequest.PostalAddress3,
                 PostalCode = addAccountRequest.PostalCode
             };
+        }
+        public async Task<IEnumerable<ApplicationPlayersResponse>> GetAllPlayersAsync() 
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    var players = await connection.QueryAsync<ApplicationPlayersResponse>("sp_GetAllPlayers", commandType: CommandType.StoredProcedure);
+                    _logger.LogInformation($"{DateTime.Now}- {nameof(AccountsRepository)} - {nameof(GetAllPlayersAsync)} - {players.Count()} retrieved.");
+                    return players;
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(AccountsRepository)} - {nameof(GetAllPlayersAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while retrieving the players. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountsRepository)} - {nameof(GetAllPlayersAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationCountriesResponse>> GetAllCountriesAsync()
+        {
+            try
+            {
+                using (var connection = _databaseConnection.CreateConnection())
+                {
+                    var countries = await connection.QueryAsync<ApplicationCountriesResponse>("sp_GetAllCountries", commandType: CommandType.StoredProcedure);
+                    _logger.LogInformation($"{DateTime.Now}- {nameof(AccountsRepository)} - {nameof(GetAllCountriesAsync)} - {countries.Count()} retrieved.");
+                    return countries;
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError($"{DateTime.Now} - SQL Exception: {nameof(AccountsRepository)} - {nameof(GetAllCountriesAsync)} - {ex.Message}");
+                throw new Exception("An error occurred while retrieving the countries. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now} - General Exception: {nameof(AccountsRepository)} - {nameof(GetAllCountriesAsync)} - {ex.Message}");
+                throw new Exception(Nofications.GeneralExceptionMessage);
+            }
         }
     }
 }

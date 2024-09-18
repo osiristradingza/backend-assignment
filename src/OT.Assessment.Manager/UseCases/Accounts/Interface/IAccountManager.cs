@@ -11,5 +11,7 @@ namespace OT.Assessment.Manager.UseCases.Accounts.Interfaces
     {
         Task<string> GlobalAddAccountAsync(AddAccountRequest addAccountRequest);
         Task<string> GlobalAddCountryAsync(AddCountryRequest addCountryRequest);
+        Task<IEnumerable<ApplicationPlayersResponse>> GetAllPlayersAsync();
+        Task<IEnumerable<ApplicationCountriesResponse>> GetAllCountriesAsync();
     }
 }

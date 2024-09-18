@@ -22,7 +22,15 @@ namespace OT.Assessment.App.Controllers
 
         [HttpPost]
         [Route("AddCountry")]
-        public async Task<IActionResult> AddCountry(AddCountryRequest addCountryRequest ) => Ok(await _accountManager.GlobalAddCountryAsync(addCountryRequest));
+        public async Task<IActionResult> AddCountry(AddCountryRequest addCountryRequest) => Ok(await _accountManager.GlobalAddCountryAsync(addCountryRequest));
+
+        [HttpGet]
+        [Route("GetAllPlayers")]
+        public async Task<IActionResult> GetAllPlayers() => Ok(await _accountManager.GetAllPlayersAsync());
+
+        [HttpGet]
+        [Route("GetAllCountries")]
+        public async Task<IActionResult> GetAllCountries() => Ok(await _accountManager.GetAllCountriesAsync());
 
 
     }

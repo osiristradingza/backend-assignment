@@ -11,5 +11,7 @@ namespace OT.Assessment.Database.Interface
     {
         Task<Guid?> AddProviderAsync(AddProviderRequest addProviderRequest);
         Task<Guid?> AddGameAsync(AddGameRequest addGameRequest);
+        Task<IEnumerable<ApplicationGamesResponse>> GetAllGamesAsync();
+        Task<IEnumerable<ApplicationProvidersResponse>> GetAllProvidersAsync();
     }
 }
