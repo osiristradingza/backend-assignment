@@ -98,7 +98,7 @@ Test your application by running the <b>OT.Assessment.Tester</b>.
 Surprise us! Add some things to your project you think are valuable additions.
 
 ### 6. Notes
-Populate the Notes.md with some of your design choices and thoughts for your code submission. Please also share any challenges experienced or improvements and suggestions for a fully production ready version of solution.
+Populate the Notes.md with some of your design choices and thoughts for your code submission. Please also share any challenges experienced or improvements and suggestions for a fully production ready version of the solution.
 
 ## Scoring Criteria
 - Completion of all requirement tasks as specified above.
