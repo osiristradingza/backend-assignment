@@ -1,29 +1,60 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OT.Assessment.App.Services;
 
+var handler = new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+};
 
-var bg = new BogusGenerator();
-var total = bg.Generate();
-var scenario = Scenario.Create("hello_world_scenario", async context =>
+// Create the host and register services including RabbitMQConnection
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =>
     {
-        var body = JsonSerializer.Serialize(total[(int)context.InvocationNumber]);
-        using var httpClient = new HttpClient();
-        var request =
-            Http.CreateRequest("POST", "https://localhost:7120/api/Player/CasinoWager")
-                .WithHeader("Accept", "application/json")
-                .WithBody(new StringContent($"{body}", Encoding.UTF8, "application/json"));
-
-        var response = await Http.Send(httpClient, request);
-
-        if (response.StatusCode == "OK") return Response.Ok();
-        return Response.Fail(body, response.StatusCode, response.Message, response.SizeBytes);
+        // Register RabbitMQConnection as a singleton
+        services.AddSingleton<RabbitMQConnection>(sp => new RabbitMQConnection("localhost"));
     })
-    .WithoutWarmUp()
-    .WithLoadSimulations(
-        Simulation.IterationsForInject(rate: 500,
-            interval: TimeSpan.FromSeconds(2),
-            iterations: 7000)
-    );
+    .Build();
 
+var rabbitMQConnection = host.Services.GetRequiredService<RabbitMQConnection>();
+using var httpClient = new HttpClient(handler);
+
+var scenario = Scenario.Create("hello_world_scenario", async context =>
+{
+    var connection = rabbitMQConnection.GetConnection();
+    if (connection == null || !connection.IsOpen)
+    {
+        return Response.Fail("RabbitMQ connection is not available", "", "", 0);
+    }
+
+    var bg = new BogusGenerator();
+    var total = bg.Generate();
+    var body = JsonSerializer.Serialize(total[(int)context.InvocationNumber]);
+    Console.WriteLine($"Request Body: {body}"); // Log the request body
+
+    var request = Http.CreateRequest("POST", "https://localhost:7120/api/player/casinowager")
+        .WithHeader("Accept", "application/json")
+        .WithBody(new StringContent(body, Encoding.UTF8, "application/json"));
+
+    // Send the request and get the response
+    var response = await Http.Send(httpClient, request);
+
+    // Check if the response is successful
+    if (response.StatusCode == "OK")
+    {
+        Console.WriteLine($"Request succeeded: {body}");
+        return Response.Ok();
+    }
+    else
+    {
+        Console.WriteLine($"Request failed: {response.StatusCode}, Message: {response.Message}");
+        return Response.Fail(body, response.StatusCode, response.Message, response.SizeBytes);
+    }
+})
+.WithoutWarmUp()
+.WithLoadSimulations(Simulation.Inject(rate: 10,
+    interval: TimeSpan.FromSeconds(5),
+    during: TimeSpan.FromSeconds(5)));
 NBomberRunner
     .RegisterScenarios(scenario)
     .WithWorkerPlugins(new HttpMetricsPlugin(new[] { HttpVersion.Version1 }))

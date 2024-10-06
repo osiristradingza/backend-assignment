@@ -1,16 +1,25 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using OT.Assessment.App.Models.Casino;
+using OT.Assessment.App.Services;
+using OT.Assessment.Consumer;
+using Serilog;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
         config.SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.development.json", optional: true)
             .Build();
     })
     .ConfigureServices((context, services) =>
     {
-        //configure services
-      
+        services.AddDbContext<CasinoContext>(options => options.UseSqlServer(context.Configuration.GetConnectionString("CasinoContext"))); // Register database
+        services.AddSingleton<Messages>();
+        services.AddLogging(configure => configure.AddSerilog()); //log error
+        services.AddHostedService<Messages>();
+        services.AddSingleton<RabbitMQConnection>(sp => new RabbitMQConnection("localhost"));
     })
     .Build();
 
