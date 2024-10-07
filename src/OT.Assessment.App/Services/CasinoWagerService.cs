@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using OT.Assessment.App.Models.Casino;
 using OT.Assessment.App.Models.DTOs;
-using System;
-using System.Threading.Tasks;
 
 namespace OT.Assessment.App.Services
 {
@@ -66,7 +63,7 @@ namespace OT.Assessment.App.Services
             _logger.LogInformation("Successfully added casino wager for {Username}.", package.username);
 
             // Publish message to RabbitMQ
-            _rabbitMqService.PublishMessage(package); // Publishing the message
+            _rabbitMqService.PublishMessage(package);
             _logger.LogInformation("Successfully published wager message to RabbitMQ for {Username}.", package.username);
         }
 

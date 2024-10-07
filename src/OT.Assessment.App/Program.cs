@@ -7,7 +7,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//log errors
+// Log errors
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
@@ -26,22 +26,22 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-//connect to db
+// Connect to the database
 builder.Services.AddDbContext<CasinoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CasinoContext")));
 
 // Register RabbitMQ services
 builder.Services.AddSingleton<RabbitMQConnection>(sp => new RabbitMQConnection("localhost"));
 builder.Services.AddSingleton<RabbitMQService>();
-builder.Services.AddSingleton<RabbitMQConsumerService>();
-builder.Services.AddScoped<CasinoWagerService>();
+builder.Services.AddScoped<CasinoWagerService>(); 
+builder.Services.AddSingleton<RabbitMQConsumerService>(); 
 
 builder.Services.AddSingleton<IConnectionFactory>(sp =>
 {
     return new ConnectionFactory()
     {
-        HostName = "localhost", // server name
-        UserName = "guest", // username for RabbitMQ
-        Password = "guest" // password for RabbitMQ
+        HostName = "localhost", // Server name
+        UserName = "guest", // Username for RabbitMQ
+        Password = "guest" // Password for RabbitMQ
     };
 });
 
@@ -63,7 +63,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-//consume message
+// Consume messages
 using (var scope = app.Services.CreateScope())
 {
     var consumerService = scope.ServiceProvider.GetRequiredService<RabbitMQConsumerService>();

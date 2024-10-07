@@ -10,16 +10,21 @@ var host = Host.CreateDefaultBuilder(args)
     {
         config.SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
-            .AddJsonFile("appsettings.development.json", optional: true)
-            .Build();
+            .AddJsonFile("appsettings.development.json", optional: true);
     })
     .ConfigureServices((context, services) =>
     {
-        services.AddDbContext<CasinoContext>(options => options.UseSqlServer(context.Configuration.GetConnectionString("CasinoContext"))); // Register database
-        services.AddSingleton<Messages>();
-        services.AddLogging(configure => configure.AddSerilog()); //log error
-        services.AddHostedService<Messages>();
+        // Register database context
+        services.AddDbContext<CasinoContext>(options =>
+            options.UseSqlServer(context.Configuration.GetConnectionString("CasinoContext")));
+
+        services.AddLogging(configure => configure.AddSerilog()); // Log error
+
+        // Register RabbitMQ services
         services.AddSingleton<RabbitMQConnection>(sp => new RabbitMQConnection("localhost"));
+        services.AddScoped<CasinoWagerService>(); 
+        services.AddSingleton<RabbitMQService>(); 
+        services.AddHostedService<RabbitMQConsumerService>(); // Register RabbitMQConsumerService as Hosted Service
     })
     .Build();
 

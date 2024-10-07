@@ -14,12 +14,14 @@ namespace OT.Assessment.Consumer
         private readonly RabbitMQConnection _rabbitMqConnection;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<Messages> _logger;
+        private readonly CasinoWagerService _casinoWagerService;
 
-        public Messages(RabbitMQConnection rabbitMqConnection, IServiceProvider serviceProvider, ILogger<Messages> logger)
+        public Messages(RabbitMQConnection rabbitMqConnection, IServiceProvider serviceProvider, ILogger<Messages> logger, CasinoWagerService casinoWagerService)
         {
             _rabbitMqConnection = rabbitMqConnection;
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _casinoWagerService = casinoWagerService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -38,7 +40,7 @@ namespace OT.Assessment.Consumer
                     var casinoContext = scope.ServiceProvider.GetRequiredService<CasinoContext>();
                     try
                     {
-                        await SaveWagerAsync(casinoContext, wager);
+                        await _casinoWagerService.AddCasinoWagerAsync(wager);
                         _logger.LogInformation("Successfully saved wager: {WagerId}", wager.wagerId);
                     }
                     catch (Exception ex)
@@ -50,43 +52,6 @@ namespace OT.Assessment.Consumer
 
             channel.BasicConsume(queue: "casino_wager_queue", autoAck: false, consumer: consumer);
             await Task.CompletedTask;
-        }
-
-        private async Task SaveWagerAsync(CasinoContext casinoContext, CasinoWagerPackage wager)
-        {
-            var players = new Players
-            {
-                PlayerId = Guid.NewGuid(),
-                Username = wager.username
-            };
-
-            casinoContext.Players.Add(players);
-            await casinoContext.SaveChangesAsync();
-            _logger.LogInformation("New player created: {Username}", wager.username);
-
-            var casinoWager = new CasinoWagers
-            {
-                WagerId = Guid.NewGuid(),
-                Theme = wager.theme,
-                Provider = wager.provider,
-                GameName = wager.gameName,
-                TransactionId = Guid.NewGuid(),
-                BrandId = Guid.NewGuid(),
-                AccountId = Guid.NewGuid(),
-                Username = wager.username,
-                ExternalReferenceId = Guid.NewGuid(),
-                TransactionTypeId = Guid.NewGuid(),
-                Amount = (decimal)wager.amount,
-                CreatedDateTime = wager.createdDateTime,
-                NumberOfBets = wager.numberOfBets,
-                CountryCode = wager.countryCode,
-                SessionData = wager.sessionData,
-                Duration = wager.duration,
-                PlayerId = players.PlayerId
-            };
-
-            await casinoContext.CasinoWagers.AddAsync(casinoWager);
-            await casinoContext.SaveChangesAsync();
         }
     }
 }

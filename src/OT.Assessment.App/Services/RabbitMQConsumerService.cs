@@ -1,20 +1,20 @@
-﻿using OT.Assessment.App.Models.Casino;
-using OT.Assessment.App.Models.DTOs;
+﻿using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Numerics;
-using System.Text;
 using System.Text.Json;
+using System.Text;
+using OT.Assessment.App.Models.Casino;
+using OT.Assessment.App.Models.DTOs;
 
 namespace OT.Assessment.App.Services
 {
-    public class RabbitMQConsumerService
+    public class RabbitMQConsumerService : IHostedService
     {
         private readonly RabbitMQConnection _rabbitMqConnection;
-        private readonly string _queueName = "casino_wager_queue";
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<RabbitMQConsumerService> _logger;
         private IModel _channel;
+        private readonly string _queueName = "casino_wager_queue";
 
         public RabbitMQConsumerService(RabbitMQConnection rabbitMqConnection, IServiceProvider serviceProvider, ILogger<RabbitMQConsumerService> logger)
         {
@@ -23,7 +23,19 @@ namespace OT.Assessment.App.Services
             _logger = logger;
             _channel = _rabbitMqConnection.GetConnection().CreateModel();
             _channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
             _logger.LogInformation("RabbitMQ Consumer started, waiting for messages...");
+            StartConsuming();
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _channel?.Close();
+            return Task.CompletedTask;
         }
 
         public void StartConsuming()
@@ -46,11 +58,11 @@ namespace OT.Assessment.App.Services
 
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var casinoContext = scope.ServiceProvider.GetRequiredService<CasinoContext>();
+                    var casinoWagerService = scope.ServiceProvider.GetRequiredService<CasinoWagerService>();
                     try
                     {
-                        await SaveWagerAsync(casinoContext, casinoWager);
-                        _channel.BasicAck(ea.DeliveryTag, false); // Acknowledge the message after publishing
+                        await casinoWagerService.AddCasinoWagerAsync(casinoWager);
+                        _channel.BasicAck(ea.DeliveryTag, false); // Acknowledge the message after processing
                     }
                     catch (Exception ex)
                     {
@@ -61,48 +73,6 @@ namespace OT.Assessment.App.Services
             };
 
             _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: consumer);
-        }
-
-        private async Task SaveWagerAsync(CasinoContext casinoContext, CasinoWagerPackage wager)
-        {
-            var players = new Players
-            {
-                PlayerId = Guid.NewGuid(),
-                Username = wager.username
-            };
-
-            casinoContext.Players.Add(players);
-            await casinoContext.SaveChangesAsync();
-            _logger.LogInformation("New player created: {Username}", wager.username);
-
-            var casinoWager = new CasinoWagers
-            {
-                WagerId = Guid.NewGuid(),
-                Theme = wager.theme,
-                Provider = wager.provider,
-                GameName = wager.gameName,
-                TransactionId = Guid.NewGuid(),
-                BrandId = Guid.NewGuid(),
-                AccountId = Guid.NewGuid(),
-                Username = wager.username,
-                ExternalReferenceId = Guid.NewGuid(),
-                TransactionTypeId = Guid.NewGuid(),
-                Amount = (decimal)wager.amount,
-                CreatedDateTime = wager.createdDateTime,
-                NumberOfBets = wager.numberOfBets,
-                CountryCode = wager.countryCode,
-                SessionData = wager.sessionData,
-                Duration = wager.duration,
-                PlayerId = players.PlayerId
-            };
-
-            await casinoContext.CasinoWagers.AddAsync(casinoWager);
-            await casinoContext.SaveChangesAsync();
-        }
-
-        public void StopConsuming()
-        {
-            _channel?.Close();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NATS.Client.Internals;
 using OT.Assessment.App.Services;
 
 var handler = new HttpClientHandler
@@ -52,9 +53,17 @@ var scenario = Scenario.Create("hello_world_scenario", async context =>
     }
 })
 .WithoutWarmUp()
-.WithLoadSimulations(Simulation.Inject(rate: 10,
-    interval: TimeSpan.FromSeconds(5),
-    during: TimeSpan.FromSeconds(5)));
+//.WithLoadSimulations(Simulation.IterationsForInject(rate: 10,
+//    interval: TimeSpan.FromSeconds(5),
+//    iterations: TimeSpan.FromSeconds(5)));
+
+.WithLoadSimulations(
+        Simulation.IterationsForInject(rate: 500,
+            interval: TimeSpan.FromSeconds(2),
+            iterations: 7000)
+    );
+
+
 NBomberRunner
     .RegisterScenarios(scenario)
     .WithWorkerPlugins(new HttpMetricsPlugin(new[] { HttpVersion.Version1 }))
