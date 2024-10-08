@@ -46,7 +46,7 @@ The API (OT.Assessment.App) must at least include the following endpoints:
           "createdDate": "2024-09-10T07:25:13.577Z"
         },
         {
-          "wagerId": "aa6700eb-1a06-483e-9739-d293dc7a9383",
+          "wagerId": "79938173-ec22-4cb5-b70f-70c31ad3aaf0",
           "game": "Test",
           "provider": "Test",
           "amount": 250,
